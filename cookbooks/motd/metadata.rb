@@ -4,7 +4,7 @@ maintainer_email 'you@example.com'
 license 'all_rights'
 description 'Installs/Configures motd'
 long_description 'Installs/Configures motd'
-version '0.1.0'
+version '0.2.0'
 
 # If you upload to Supermarket you should set this so your cookbook
 # gets a `View Issues` link

@@ -1,0 +1,19 @@
+---
+driver:
+  name: dokken
+  chef_version: 12.6.0
+
+transport:
+  name: dokken
+
+provisioner:
+  name: dokken
+
+verifier:
+  name: inspec
+  sudo: true
+
+platforms:
+- name: ubuntu-14.04
+  driver:
+    image: ubuntu:14.04
