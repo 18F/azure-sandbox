@@ -1,0 +1,40 @@
+
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUserName": {
+      "value": "<<choose a username for your instance>>"
+    },
+    "adminPassword": {
+      "value": "<<choose a password for your instance>>"
+    },
+    "vmDnsName": {
+      "value": "<<choose a subdomain name for your instance>>"
+    },
+    "osType": {
+      "value": "Ubuntu-14.04.2-LTS"
+    },
+    "vmSize": {
+      "value": "Standard_A0"
+    },
+    "chef_node_name": {
+      "value": "<<choose a name for this node in Chef Server>>"
+    },
+    "chef_server_url": {
+      "value": "https://api.chef.io/organizations/<<your chef organization>>"
+    },
+    "validation_client_name": {
+      "value": "<<your chef username>>"
+    },
+    "runlist": {
+      "value": "recipe[motd]"
+    },
+    "validation_key": {
+      "value": "<<your private key from Chef Server with newline chars replaced with `\n`>>"
+    },
+    "validation_key_format": {
+      "value": "plaintext"
+    }
+  }
+}
