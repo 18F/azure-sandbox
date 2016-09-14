@@ -1,4 +1,3 @@
-
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
@@ -28,7 +27,7 @@
       "value": "<<your chef username>>"
     },
     "runlist": {
-      "value": "recipe[motd]"
+      "value": "recipe[motd],recipe[tla_jenkins]"
     },
     "validation_key": {
       "value": "<<your private key from Chef Server with newline chars replaced with `\n`>>"
