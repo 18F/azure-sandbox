@@ -1,0 +1,39 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUserName": {
+      "value": "azure"
+    },
+    "adminPassword": {
+      "value": "MWoGM9dJN4Refc"
+    },
+    "vmDnsName": {
+      "value": "azjen2master0"
+    },
+    "osType": {
+      "value": "Ubuntu-14.04.2-LTS"
+    },
+    "vmSize": {
+      "value": "Standard_A0"
+    },
+    "chef_node_name": {
+      "value": "azjen2client0"
+    },
+    "chef_server_url": {
+      "value": "https://api.chef.io/organizations/azjen2"
+    },
+    "validation_client_name": {
+      "value": "peterburkholdergsa"
+    },
+    "runlist": {
+      "value": "recipe[motd],recipe[tla_jenkins]"
+    },
+    "validation_key": {
+      "value": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA9TNIASI5sY0vYxvJ+SjulWhZ7UaOqv3Q5zp7iZzEkLyFk1EK\nVfsxboifWwObycNaYpA9TKs+6bb+SfN+LS6GV9PRJZJXJhSTN56niji7dsdIrScz\n13StlQRWPESh1QqliKhwYnCTcYAvzJefuJkdgAHCLjRdHe6SJVVSe20LU+x1ofWY\ny2owBf9b9eakaSerR6+XtncZAr5BaVbH8urB9k0g3xpU942l3FeMEZAhXcuJPkYk\nrclnDKN3c9i30qTL8nswb4VrbExB96ZbUkTnUrORL3GUf6JcAeDDCupMTG1m0X+U\nXkxX5mxpPnqThJ4L5El2cLrs+HnUf4rQ4tpg/wIDAQABAoIBAFN1oAWaw652kvGW\nDNo9H3BFc4563KbA+/Eoi9IcRR/Ku2CYTf9UH9AyuqL9CHLVhpdT5zmIdEKS4d0D\n/yeb1WhhlafHNtikWjOtUfOPOefFDyy40kF82nSFZGDhL4BXPl7UjmRDUzxn2F04\nIspve4YNky2s7yD4ClCgyRFv3VIz2Ird9ZDsf0+sGe/R7SAK4FcNx82JE9lJry9f\nA9CniBrv+pIY0NRb2zGkr8QrlLxpfeNTxTlmzVDzUwpMN3VkthuafHLc5j7b0DsQ\nAHGfGBIjKb4XsLrYCri69WsPzE44MvNbaO4ESgieWK+bKb2WanxCje59l5fk6Eft\n5RH6t9ECgYEA+9uvnj64Eha7PDnbbbvzogDQY0aE6r2QUAhwPkPGS1Zw5XK5azDu\n2etUfGq5RLWLBGD5RE3OntPFb2wrjaf0RhNp0hNZx1R54ktsto8S2BnGzSdsx7xy\nKjaWrB1x1rTQ6viWwYx7cXDdtNgdC3xaPIHvalEEJDLrLQUrUmwcMykCgYEA+TuQ\n5udVjvwjP8P8pqCgFJfbsdt04/UgcQFBZJXYSXi8pMwQFkdUZsXZ7Pjj6VaqPAbn\nz4C+cYK7fPFLe2B/5HdZts2hwMNvvA7Hv3ACfntM9fYfUsxt4ljLe3KUqeaP1cTA\nyopUAQQoFLKF9Ub7Cd7nFn90PoMarG0X0ESMX+cCgYAD6n+Ji1obVeUlY5To2OJJ\n449Z68/HQplK1UbBgRZFN5vbxXPimcks9D7FDHfC/LujnsphaIBM8egA+oKW2kSv\nDkA39vsPYV3fyeJv2DunxobTy8giNujjhSPEm1SYzQjujlzxt3h35BReannRIubY\nSADr+0SAN5Z2hb0NtAagOQKBgQC32FeX7DcxpQ3/YHvDEiNjbW1yshZ0fQI0OZ/a\nKaqE79n/mkOXm4BH21RYuHOuUO58Hv/qEebpZm0Uyg1K8jEE/4EfFmpl/gQy7Zgs\nv9wnHp7zpF0Qv5mi6KsY4bmF5nxdTKiF/yneIgnK0rF776MIcfN2pgfCgQUxAbwa\nNiZyKwKBgBie1LM0yE7wSUbiAGZEjmXKzF4Un1EMUZWaoUcTwvAMp1GMDDbttrXN\nE+ssatpu4bnPuTsMVF9ulpHhSVJizQRwhxTXGm32cmwgcZ4dFLnjYbR5OLNTEb/2\nxUOehv2/egYGCrBr/F4wZnhPLlKro2ivO7sRbwTFmGdmFxENH1ip\n-----END RSA PRIVATE KEY-----\n"
+    },
+    "validation_key_format": {
+      "value": "plaintext"
+    }
+  }
+}
