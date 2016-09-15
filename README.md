@@ -17,6 +17,8 @@ brew install azure-cli
 azure login
 ```
 
+If you have problems with `azure` commands, first try to update the azure-cli (`brew upgrade azure-cli`).  It can be buggy and seems to be changing fast.
+
 ### Chef Server Account
 Create a new account at [api.chef.io](api.chef.io). Visit the Administration tab and download the Starter Kit.
 
@@ -74,7 +76,56 @@ SSH to the node with values from your deploy parameters
 
 Jenkins should be running at `subdomain.eastus.cloudapp.azure.com:8080`
 
-
-#### Destroy launched infra
+#### Destroy
 Turn things off at EOD to avoid charges
 `azure group delete chef-json-parameters-linux-vm`
+
+### MS KeyVault Notes
+KeyVault is like a bucket, having a global namespace. We can keep secrets there.
+
+#### Create a vault
+```
+azure provider register Microsoft.KeyVault
+azure group create KVexample eastus
+
+VAULT=<some_globally_unique_name>
+azure keyvault create --vault-name $VAULT --resource-group KVexample --location eastus
+```
+
+#### Set a secret
+```
+KEY=fake-password
+VALUE=pa$$w0rd
+azure keyvault secret set --vault-name $VAULT --secret-name '$KEY' --value '$VALUE'
+```
+
+#### Use a secret
+Make the secret available to templates with `azure keyvault set-policy $VAULT --enabled-for-template-deployment true`.
+We aren't injecting variables into templates yet, so a manual description for template editing:
+
+In `chef-json-parameters-linux-vm/azuredeploy.parameters.json` replace
+
+```
+"adminPassword": {
+  "value": "MWoGM9dJN4Refc"
+},
+```
+With
+```
+"adminPassword": {
+  "reference": {
+    "keyVault": {
+      "id": "/subscriptions/34faf229-f395-4c97-9657-af92de86c679/resourceGroups/KVexample/providers/Microsoft.KeyVault/vaults/$VAULT"
+    },
+    "secretName": "$KEY"
+  }
+```
+
+Similarly for validation-key:
+```
+cat ~/.ssh/pburkholder_gsa | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/\\n/g' > t
+azure keyvault secret set --vault-name '$VAULT' --secret-name 'validation-key' --file t
+```
+
+#### Destroy
+When you're done delete with `azure group delete KVexample`
