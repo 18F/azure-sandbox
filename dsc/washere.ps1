@@ -8,4 +8,4 @@ Configuration DSCConf1 {
    }
 }
 
-DSC1
+DSCConf1
