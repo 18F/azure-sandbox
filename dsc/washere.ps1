@@ -1,3 +1,4 @@
+# sample showing embedded configuration data for multiple nodes
 
 $TheData = @{
   AllNodes = @(
