@@ -1,5 +1,21 @@
+
+$TheData = @{
+  AllNodes = @(
+    @{
+      NodeName = "localhost"
+    },
+    @{
+      NodeName = "win2012copy"
+    },
+    @{
+      NodeName = "win2012copy2"
+    }
+  ); 
+}
+
+
 Configuration DSCConf1 {
-    Node "localhost" {
+    Node $AllNodes.NodeName {
         File DSCFile {
             Ensure = 'Present'
             DestinationPath = 'C:\dsc_was_here'
@@ -8,4 +24,4 @@ Configuration DSCConf1 {
    }
 }
 
-DSCConf1
+DSCConf1 -ConfigurationData $TheData
