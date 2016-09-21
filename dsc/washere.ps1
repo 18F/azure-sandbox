@@ -8,7 +8,7 @@ $TheData = @{
       NodeName = "win2012copy"
     },
     @{
-      NodeName = "win2012copy2"
+      NodeName = "win2012copy2.cloudapp.net"
     }
   ); 
 }
