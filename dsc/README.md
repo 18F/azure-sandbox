@@ -1,5 +1,7 @@
 Some sample scripts for getting started with DSC in Azure.
 
+**See the Github project WIKI for lots more info on DSC**
+
 To make these as generally applicable as possible, they are developed in Classic aka Azure Service Manager (ASM) mode. For Azure cli, get started with:
 
 ```
