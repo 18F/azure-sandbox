@@ -12,12 +12,39 @@ configuration RemoteFileshareInstall {
     [string]$StorageAccountName
   )
 
+  $user = "peter.burkholder@gsa.gov"
+  $password = "XXXXXXXX"
+  $secPassword = ConvertTo-SecureString $password -AsPlainText -Force
+  $credential = New-Object System.Management.Automation.PSCredential($user,$secPassword)
+
   node $ComputerName {
+    Script AzureModule {
+      GetScript = { write @{} }
+      TestScript = {
+        (Get-Module -Name Azure.Storage).length -ge 1
+      }
+      SetScript = {
+        Write-Warning "Next Install-PackageProvider line may need to be uncommented"
+        #Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+        Install-Module azure
+      }
+    }
+
+    Script AzureSubscription {
+      GetScript = { Write @{} }
+      TestScript = {
+        (Get-AzureSubscription).length -ge 1
+      }
+      SetScript = {}
+    }
+
     Script ShareInstallMount {
-      TestScript {
+#      DependsOn = [Script]"AzureModule"
+      GetScript = { write @{} }
+      TestScript = {
         Test-Path 'i:\psmodules'
       }
-      SetScript {
+      SetScript = {
         # get the full storage key, but use just the primary, which
         # is just a long secret like an AWS secret key
         $StorageKey = (Get-AzureStorageKey $StorageAccountName).Primary
@@ -32,4 +59,4 @@ configuration RemoteFileshareInstall {
   }
 }
 
-RemoteFileshareInstall -ComputerName 18faz-sqls1 -StorageAccountName 18fazsandbox2
+RemoteFileshareInstall -ComputerName 18faz-sqls1.cloudapp.net -StorageAccountName 18fazsandbox2
