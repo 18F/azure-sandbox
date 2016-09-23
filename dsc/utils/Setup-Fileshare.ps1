@@ -18,14 +18,23 @@
 # Get-AzureStorageAccount -StorageAccountName 18fazsandbox2
 
 $StorageAccountName="18fazsandbox2"
+
+# get the full storage key, but use just the primary, which
+# is just a long secret like an AWS secret key
 $StorageKey = (Get-AzureStorageKey $StorageAccountName).Primary
+
+# Create a context object for doing calls to AzureStore
 $ctx = New-AzureStorageContext $StorageAccountName $StorageKey
 
-# Create a share:
+# Create the install  share if it doesn't exist
 if ((Get-AzureStorageShare install -Context $ctx).length -eq 0) {
    Write-Warning "Creating install share and mounting it"
   $s = New-AzureStorageShare install -Context $ctx
+
+  # cmdkey will "persist the account crentials" on the node
   cmdkey /add:$StorageAccountName.file.core.windows.net /user:$StorageAccountName /pass:$StorageKey
+
+  # net use mounts the share
   net use i: \\$StorageAccountName.file.core.windows.net\install
 } else {
   Write-Warning "Install share should be present"
