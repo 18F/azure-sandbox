@@ -12,6 +12,11 @@ configuration RemoteFileshareInstall {
     [string]$StorageAccountName
   )
 
+  $user = "peter.burkholder@gsa.gov"
+  $password = "XXXXXXXX"
+  $secPassword = ConvertTo-SecureString $password -AsPlainText -Force
+  $credential = New-Object System.Management.Automation.PSCredential($user,$secPassword)
+
   node $ComputerName {
     Script AzureModule {
       GetScript = { write @{} }
@@ -23,6 +28,14 @@ configuration RemoteFileshareInstall {
         #Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
         Install-Module azure
       }
+    }
+
+    Script AzureSubscription {
+      GetScript = { Write @{} }
+      TestScript = {
+        (Get-AzureSubscription).length -ge 1
+      }
+      SetScript = {}
     }
 
     Script ShareInstallMount {
