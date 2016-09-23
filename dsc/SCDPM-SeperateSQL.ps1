@@ -4,10 +4,9 @@ Configuration DPM
 {
     Import-DscResource -Module xDismFeature
     Import-DscResource -Module xSqlServer
+    Import-DscResource -Module xSCDPM
 
-    # Set role and instance variables
-    # So role "System Center 2012 R2 Data Protection Manager Database Server" gets condensed
-    # to $SystemCenter2012R2DataProtectionManagerServer
+    # Set jjj and instance variables
     $Roles = $AllNodes.Roles | Sort-Object -Unique
     foreach($Role in $Roles)
     {
@@ -223,8 +222,7 @@ Configuration DPM
     }
 }
 $SecurePassword = ConvertTo-SecureString -String "Pass@word1" -AsPlainText -Force
-#$InstallerServiceAccount = New-Object System.Management.Automation.PSCredential ("CONTOSO\!Installer", $SecurePassword)
-$InstallerServiceAccount = New-Object System.Management.Automation.PSCredential ("SYSTEM", $SecurePassword)
+$InstallerServiceAccount = New-Object System.Management.Automation.PSCredential ("CONTOSO\!Installer", $SecurePassword)
 $LocalSystemAccount = New-Object System.Management.Automation.PSCredential ("SYSTEM", $SecurePassword)
 
 $ConfigurationData = @{
@@ -235,7 +233,7 @@ $ConfigurationData = @{
             InstallerServiceAccount = $InstallerServiceAccount
             LocalSystemAccount = $LocalSystemAccount
             PSDscAllowPlainTextPassword = $true
-            AdminAccount = "18fazure"
+            AdminAccount = "CONTOSO\Administrator"
         }
         @{
             NodeName = "DPMDB.contoso.com"
@@ -246,10 +244,6 @@ $ConfigurationData = @{
                     InstanceName = "MSSQLSERVER"
                 }
             )
-        }
-        @{
-            NodeName = "DPM01.contoso.com"
-            Roles = @("System Center 2012 R2 Data Protection Manager Server")
         }
     )
 }
