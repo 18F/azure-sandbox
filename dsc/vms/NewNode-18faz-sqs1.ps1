@@ -1,6 +1,6 @@
 #############
 # Only do these two lines once!
-# Import-Module azure
+# Import-Module azure (or install-module?? or choco install windowsazurepowershell)
 # Add-AzureAccount # open IE and login
 
 # Usage: ./init.ps1 mypassword
