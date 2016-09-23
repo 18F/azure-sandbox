@@ -11,7 +11,10 @@ $TheData = @{
     @{
       NodeName = "win2012copy2.cloudapp.net"
     }
-  ); 
+    @{
+      NodeName = "18faz-SqlS1.cloudapp.net"
+    }
+  );
 }
 
 
