@@ -1,10 +1,14 @@
+
+# Install stuff from the DSC Resource Kit:
+
+Write-Warning -Message "Don't run this script twice, or you'll get version specification errors"
 $resources = @('xDismFeature', 'xSqlServer', 'xSCDPM')
 
 #$sc_resources  = Find-Module -Tag DSCResourceKit | Select -Expand Name | select-string "xSC"
 
 Foreach($r in $resources) {
   Write-Host $r
-  Remove-Module $r -Force
+  Install-Module $r -Force
 }
 
 
