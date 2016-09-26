@@ -20,10 +20,14 @@ configuration RemoteFileshareInstall {
   $secPassword = ConvertTo-SecureString $password -AsPlainText -Force
   $credential = New-Object System.Management.Automation.PSCredential($user,$secPassword)
   $publishsettings = Get-Content $HOME\Projects\freetrial.publishsettings
+  $AzureUser = '18fazure'
+  $StorageAccountName = 'azsandbox2'
+  $StorageKey = (Get-AzureStorageKey 18fazsandbox2).Secondary
 
   Import-DSCResource -ModuleName "PSDesiredStateConfiguration"
 
   node $ComputerName {
+    <#
     File PubSettings {
       DestinationPath = "c:/tmp.publishsettings"
       Contents = [string]$publishsettings
@@ -32,6 +36,7 @@ configuration RemoteFileshareInstall {
     Script AzureModule {
       GetScript = { write @{} }
       TestScript = {
+        Write-Warning "This should be true after module install"
         (Get-Module -Name Azure.Storage).length -ge 1
       }
       SetScript = {
@@ -50,23 +55,26 @@ configuration RemoteFileshareInstall {
         Import-AzurePublishSettingsFile "c:/tmp.publishsettings"
       }
     }
+    #>
 
-    Script ShareInstallMount {
-#      DependsOn = [Script]"AzureModule"
+<#
+    Script CmdKey {
+      GetScript = { write @{} }
+      TestScript = {
+        (cmdkey /list).length -gt 6
+      }
+      SetScript = {
+        cmdkey /add:18fazsandbox2.file.core.windows.net /user:18fazsandbox2 /pass:$using:StorageKey
+      }
+    }
+    #>
+    Script NetUse {
       GetScript = { write @{} }
       TestScript = {
         Test-Path 'i:\psmodules'
       }
       SetScript = {
-        # get the full storage key, but use just the primary, which
-        # is just a long secret like an AWS secret key
-        $StorageKey = (Get-AzureStorageKey $StorageAccountName).Primary
-
-        # cmdkey will "persist the account crentials" on the node
-        cmdkey /add:$StorageAccountName.file.core.windows.net /user:$StorageAccountName /pass:$StorageKey
-
-        # net use mounts the share
-        net use i: \\$StorageAccountName.file.core.windows.net\install
+        net use i: \\18fazsandbox2.file.core.windows.net\install  $using:StorageKey /user:18fazsandbox2 /persistent:yes
       }
     }
   }
