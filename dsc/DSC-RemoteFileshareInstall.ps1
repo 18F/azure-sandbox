@@ -21,11 +21,13 @@ configuration RemoteFileshareInstall {
   $credential = New-Object System.Management.Automation.PSCredential($user,$secPassword)
   $publishsettings = Get-Content $HOME\Projects\freetrial.publishsettings
 
+  Import-DSCResource -ModuleName "PSDesiredStateConfiguration"
+
   node $ComputerName {
     File PubSettings {
-      Path "c:/tmp.publishsettings"
-      Content $publishsettings
-      Ensure Present
+      DestinationPath = "c:/tmp.publishsettings"
+      Contents = [string]$publishsettings
+      Ensure = "Present"
     }
     Script AzureModule {
       GetScript = { write @{} }
