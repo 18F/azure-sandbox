@@ -15,10 +15,6 @@ configuration RemoteFileshareInstall {
     [string]$StorageAccountName
   )
 
-  $user = "peter.burkholder@gsa.gov"
-  $password = "XXXXXXXX"
-  $secPassword = ConvertTo-SecureString $password -AsPlainText -Force
-  $credential = New-Object System.Management.Automation.PSCredential($user,$secPassword)
   $publishsettings = Get-Content $HOME\Projects\freetrial.publishsettings
   $AzureUser = '18fazure'
   $StorageAccountName = 'azsandbox2'
@@ -77,11 +73,21 @@ configuration RemoteFileshareInstall {
         net use i: \\18fazsandbox2.file.core.windows.net\install  $using:StorageKey /user:18fazsandbox2 /persistent:yes
       }
     }
+
+    Get-ChildItem i:\psmodules\x* | foreach {
+      $xModule = $_.name
+      File $xModule {
+        DependsOn = "[Script]NetUse"
+        DestinationPath = "C:\Program Files\WindowsPowerShell\Modules\$xModule"
+        SourcePath = "I:\psmodules\$xModule"
+        Type = "Directory"
+        Recurse = $True
+      }
+    }
   }
 }
 
 RemoteFileshareInstall -ComputerName 18faz-sql1.cloudapp.net -StorageAccountName 18fazsandbox2
-
 
 <#
 Turn off IE enhance security
