@@ -15,21 +15,24 @@ configuration RemoteFileshareInstall {
     [string]$StorageAccountName
   )
 
-  $user = "peter.burkholder@gsa.gov"
-  $password = "XXXXXXXX"
-  $secPassword = ConvertTo-SecureString $password -AsPlainText -Force
-  $credential = New-Object System.Management.Automation.PSCredential($user,$secPassword)
   $publishsettings = Get-Content $HOME\Projects\freetrial.publishsettings
+  $AzureUser = '18fazure'
+  $StorageAccountName = 'azsandbox2'
+  $StorageKey = (Get-AzureStorageKey 18fazsandbox2).Secondary
+
+  Import-DSCResource -ModuleName "PSDesiredStateConfiguration"
 
   node $ComputerName {
+    <#
     File PubSettings {
-      Path "c:/tmp.publishsettings"
-      Content $publishsettings
-      Ensure Present
+      DestinationPath = "c:/tmp.publishsettings"
+      Contents = [string]$publishsettings
+      Ensure = "Present"
     }
     Script AzureModule {
       GetScript = { write @{} }
       TestScript = {
+        Write-Warning "This should be true after module install"
         (Get-Module -Name Azure.Storage).length -ge 1
       }
       SetScript = {
@@ -48,30 +51,43 @@ configuration RemoteFileshareInstall {
         Import-AzurePublishSettingsFile "c:/tmp.publishsettings"
       }
     }
+    #>
 
-    Script ShareInstallMount {
-#      DependsOn = [Script]"AzureModule"
+<#
+    Script CmdKey {
+      GetScript = { write @{} }
+      TestScript = {
+        (cmdkey /list).length -gt 6
+      }
+      SetScript = {
+        cmdkey /add:18fazsandbox2.file.core.windows.net /user:18fazsandbox2 /pass:$using:StorageKey
+      }
+    }
+    #>
+    Script NetUse {
       GetScript = { write @{} }
       TestScript = {
         Test-Path 'i:\psmodules'
       }
       SetScript = {
-        # get the full storage key, but use just the primary, which
-        # is just a long secret like an AWS secret key
-        $StorageKey = (Get-AzureStorageKey $StorageAccountName).Primary
+        net use i: \\18fazsandbox2.file.core.windows.net\install  $using:StorageKey /user:18fazsandbox2 /persistent:yes
+      }
+    }
 
-        # cmdkey will "persist the account crentials" on the node
-        cmdkey /add:$StorageAccountName.file.core.windows.net /user:$StorageAccountName /pass:$StorageKey
-
-        # net use mounts the share
-        net use i: \\$StorageAccountName.file.core.windows.net\install
+    Get-ChildItem i:\psmodules\x* | foreach {
+      $xModule = $_.name
+      File $xModule {
+        DependsOn = "[Script]NetUse"
+        DestinationPath = "C:\Program Files\WindowsPowerShell\Modules\$xModule"
+        SourcePath = "I:\psmodules\$xModule"
+        Type = "Directory"
+        Recurse = $True
       }
     }
   }
 }
 
 RemoteFileshareInstall -ComputerName 18faz-sql1.cloudapp.net -StorageAccountName 18fazsandbox2
-
 
 <#
 Turn off IE enhance security

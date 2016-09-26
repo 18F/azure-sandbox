@@ -29,7 +29,7 @@ $image = "Win2012r2WPSAtom"
 
 $user = "18fazure"
 #           123456789012345  -- max 15 chars for svc name
-$svcName = "18faz-sqls"
+# $svcName = "18faz-sqls"
 $vms = @("18faz-sql1", "18faz-sql2")
 foreach ($VMName in $vms ) {
   $location = "South Central US"
@@ -39,5 +39,5 @@ foreach ($VMName in $vms ) {
 
   New-AzureVMConfig -Name $VMName -InstanceSize "Standard_DS2" -ImageName $image |
                   Add-AzureProvisioningConfig -Windows -AdminUsername $user -Password $pwd |
-                  New-AzureVM -ServiceName $svcName -Location $location
+                  New-AzureVM -ServiceName $VMName -Location $location
 }
