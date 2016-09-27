@@ -49,5 +49,8 @@ Write-Verbose "Setting up Session in CIM"
 $sessionOption = New-CimSessionOption -SkipCNCheck -UseSSL -SkipRevocationCheck -SkipCACheck
 $cs = New-CimSession -ComputerName $uri.host -Port $uri.port -Credential $credential -SessionOption $sessionOption
 
+Write-Verbose "Starting Remote LCM Configuration"
+Set-DscLocalConfigurationManager -Path $Dsc -Verbose -Force -CimSession $cs
+
 Write-Verbose "Starting DSC"
 Start-DscConfiguration -Path $Dsc -Verbose -Force -CimSession $cs -Wait

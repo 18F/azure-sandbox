@@ -29,7 +29,6 @@ $image = "Win2012r2WPSAtom"
 
 $user = "18fazure"
 #           123456789012345  -- max 15 chars for svc name
-# $svcName = "18faz-sqls"
 $vms = @("18faz-sql1", "18faz-sql2")
 foreach ($VMName in $vms ) {
   $location = "South Central US"
