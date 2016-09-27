@@ -1,10 +1,10 @@
 Configuration xJenkins {
   param(
-    [string[]]$ComputerName
+    [string[]]$ComputerName,
     [string]$StorageAccountName
   )
-  Import-DSCResource -ModuleName 'xPSDesiredStateConfiguration' # get xRemoteFile,
 
+  Import-DscResource -ModuleName @{ModuleName="xPSDesiredStateConfiguration"; ModuleVersion="4.0.0.0"}
   $StorageKey = (Get-AzureStorageKey $StorageAccountName).Secondary
 
   node $ComputerName {
@@ -50,6 +50,7 @@ Configuration xJenkins {
     #  Uri = "http://mirror.xmission.com/jenkins/windows/jenkins-${JenkinsVersion}.zip"
     #  DestinationPath = Join-Path $Node.DSCScratchDirPath "jenkins-${JenkinsVersion}.zip"
     #}
+  }
 }
 
 $cd = @{
