@@ -11,7 +11,7 @@ param (
 #
 $subscription = "Free Trial"
 Select-AzureSubscription $subscription
-New-AzureStorageAccount -Location "South Central US" 18fazsandbox2
+# New-AzureStorageAccount -Location "South Central US" 18fazsandbox2
 Set-AzureSubscription -SubscriptionName $subscription -CurrentStorageAccount 18fazsandbox2
 
 # From
@@ -29,7 +29,8 @@ $image = "Win2012r2WPSAtom"
 
 $user = "18fazure"
 #           123456789012345  -- max 15 chars for svc name
-$vms = @("18faz-sql1", "18faz-sql2")
+# $vms = @("18faz-sql1", "18faz-sql2")
+$vms =   @("18faz-jen1")
 foreach ($VMName in $vms ) {
   $location = "South Central US"
 
