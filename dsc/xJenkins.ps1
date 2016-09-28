@@ -9,43 +9,6 @@ Configuration xJenkins {
   $StorageKey = (Get-AzureStorageKey $StorageAccountName).Secondary
 
   node $ComputerName {
-    # Debug Needed to prevent caching of resources, Implemented by
-    # Set-DscLocalConfigurationManager -Path $Dsc -Verbose -Force -CimSession $cs
-    LocalConfigurationManager
-    {
-        DebugMode = 'ForceModuleImport'
-        RebootNodeIfNeeded = $true
-    }
-
-    Script NetUse {
-      GetScript = { write @{} }
-      TestScript = {
-        Test-Path 'i:\psmodules'
-      }
-      SetScript = {
-        net use i: \\$using:StorageAccountName.file.core.windows.net\install `
-          $using:StorageKey /user:$using:StorageAccountName /persistent:yes
-      }
-    }
-
-    # Copy all modules over to the PSModule directory
-    Get-ChildItem i:\psmodules\x* | foreach {
-      $xModule = $_.name
-      File $xModule {
-        DependsOn = "[Script]NetUse"
-        DestinationPath = "C:\Program Files\WindowsPowerShell\Modules\$xModule"
-        SourcePath = "I:\psmodules\$xModule"
-        Type = "Directory"
-        Recurse = $True
-      }
-    }
-
-
-    File ScratchDir {
-      DestinationPath = $Node.DSCScratchDirPath
-      Ensure = "Present"
-      Type = "Directory"
-    }
 
     Write-Verbose "Setting up xRemoteFile"
     $JenkinsFile = "jenkins-" + $Node.JenkinsVersion + ".zip"
@@ -55,7 +18,6 @@ Configuration xJenkins {
     xRemoteFile JenkinsZip {
       Uri = $JenkinsURI
       DestinationPath = $JenkinsZip
-      DependsOn = "[File]ScratchDir"
       MatchSource = $False
     }
 
@@ -82,7 +44,7 @@ Configuration xJenkins {
 $cd = @{
   AllNodes = @(
     @{
-      NodeName = '18faz-sql2.cloudapp.net'
+      NodeName = '18faz-jen1.cloudapp.net'
       PSDscAllowPlainTextPassword = $true
       DSCScratchDirPath = "C:\DSCScratchDirPath"
       JenkinsVersion = "2.23"
@@ -90,4 +52,4 @@ $cd = @{
   )
 }
 
-xJenkins -ComputerName 18faz-sql2.cloudapp.net -StorageAccountName 18fazsandbox2 -ConfigurationData $cd
+xJenkins -ComputerName 18faz-jen1.cloudapp.net -StorageAccountName 18fazsandbox2 -ConfigurationData $cd

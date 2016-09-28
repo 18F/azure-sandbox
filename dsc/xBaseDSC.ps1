@@ -58,4 +58,4 @@ $cd = @{
 }
 
 xBaseDSC -ComputerName 18faz-jen1.cloudapp.net -StorageAccountName 18fazsandbox2 -ConfigurationData $cd
-Write-Host "./Run-AzureDSC -Target $computername -User 18fazure -Password $password -verbose -Dsc ./xBaseDSC"
+Write-Host "./Run-AzureDSC -Target $computername -User 18fazure -Password $$assword -verbose -Dsc ./xBaseDSC"
