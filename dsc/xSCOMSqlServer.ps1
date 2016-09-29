@@ -26,8 +26,9 @@ configuration xSCOMSqlServer {
   $StorageAccountName = '18fazsandbox2'
   $StorageKey = (Get-AzureStorageKey $StorageAccountName).Secondary
 
+  #$SecurePassword = ConvertTo-SecureString -String "Pass@word1" -AsPlainText -Force
   $AzureUser = '18fazure'
-  $SecurePassword = ConvertTo-SecureString -String "Pass@word1" -AsPlainText -Force
+  $SecurePassword = ConvertTo-SecureString -String $password -AsPlainText -Force
   $InstallerServiceAccount = New-Object System.Management.Automation.PSCredential ($AzureUser, $SecurePassword)
 
   Import-DSCResource -ModuleName "PSDesiredStateConfiguration"
@@ -44,41 +45,45 @@ configuration xSCOMSqlServer {
 
     # Script CmdKey - probably a better way to persist credentials, but didn't seem to
     # be available for `net use`
-
-    # Note use if `$using` here, which fetches variables available at compliation time.
-    Script NetUse {
-      GetScript = { write @{} }
-      TestScript = {
-        Test-Path 'i:\psmodules'
-      }
-      SetScript = {
-        net use i: \\$using:StorageAccountName.file.core.windows.net\install `
-          $using:StorageKey /user:$using:StorageAccountName /persistent:yes
-      }
-    }
-
-    # Copy all modules over to the PSModule directory
-    Get-ChildItem i:\psmodules\x* | foreach {
-      $xModule = $_.name
-      File $xModule {
-        DependsOn = "[Script]NetUse"
-        DestinationPath = "C:\Program Files\WindowsPowerShell\Modules\$xModule"
-        SourcePath = "I:\psmodules\$xModule"
-        Type = "Directory"
-        Recurse = $True
-      }
-    }
-
     WindowsFeature "NET-Framework-Core"
     {
         Ensure = "Present"
         Name = "NET-Framework-Core"
     }
+    #$Features = "SQLENGINE,RS"
+    $Features = "SQLENGINE"
+    $SQLInstanceName = "MSSQLSERVER"
+    $SetupArgs = " /QUIET /ACTION=Install /FEATURES=$Features /INSTANCENAME=$SQLInstanceName /IACCEPTSQLSERVERLICENSETERMS /SqlSyadminAccounts=$AzureUser"
+    $SetupPath = "I:\SQLServer2014SP2\Source\setup.exe"
+    $SetupCommand = $SetupPath + $SetupArgs
 
-    $Features = "SQLENGINE,RS"
-    $SQLInstanceName = "SCOMSqlServer"
+    Script SqlServerSetup {
+      DependsOn = "[WindowsFeature]NET-Framework-Core"
+      TestScript = {
+        if (Get-Service | Where Name -eq $using:SQLInstanceName) {
+          return $true
+        }
+        return $false
+      }
+      GetScript = {
+        Get-Service | Where Name -eq $using:SQLInstanceName
+      }
+      SetScript = {
+        $E = "c:\sqlerr"
+        $O = "c:\sqlout"
+        $FP = "$using:SetupPath"
+        $AL = "$using:SetupArgs"
+        Start-Process -FilePath $FP -ArgumentList $AL -NoNewWindow -Wait -RedirectStandardError $E -RedirectStandardOutput $O
+        Write-Verbose $?
+        Write-Verbose -Message "============== OUTPUT ========="
+        Get-Content $O | Write-Verbose 
+        Write-Verbose -Message "============== ERROR ========="
+        Get-Content $E | Write-Verbose
+        Write-Verbose -Message "============== FINIS ========="
+      }
+    }
 
-<#   THIS STUFF OUGHT TO WORK - SEEMS BUSTED AT RUNNING SETUP.EXE
+   <#
  #   NEED TO REMVOE THE /QUIET SWITCH AND PUSH TO SHARED MODULE REPO
     # Didja know -- SQLServer2014 is SQLVersion #12.  SqlSwerver2016 is #13.
     xSqlServerSetup $SQLInstanceName
@@ -93,6 +98,7 @@ configuration xSCOMSqlServer {
 #        AgtSvcAccount = $Node.LocalSystemAccount
 #        RSSvcAccount = $Node.LocalSystemAccount
     }
+    <#
 
     xSqlServerFirewall ($Node.NodeName + $SQLInstanceName)
     {
@@ -130,15 +136,21 @@ configuration xSCOMSqlServer {
 # security errors on plain test credientials in
 # MOF from the use of StorageKey or Crediential above.
 
-# https://blogs.technet.microsoft.com/ashleymcglone/2015/12/18/using-credentials-with-psdscallowplaintextpassword-and-psdscallowdomainuser-in-powershell-dsc-configuration-data/
+# https://blogs.technet.microsoft.com/ashleymcglone/2015/12/18/using-cjredentials-with-psdscallowplaintextpassword-and-psdscallowdomainuser-in-powershell-dsc-configuration-data/
 
 $cd = @{
-    AllNodes = @(
-        @{
-            NodeName = "18faz-sql1.cloudapp.net"
-            PSDscAllowPlainTextPassword = $True
-        }
-    )
+  AllNodes = @(
+    @{
+      NodeName = "18faz-sql1.cloudapp.net"
+      PSDscAllowPlainTextPassword = $True
+      LocalSystemAccount = $User
+    }
+    @{
+      NodeName = "18faz-sql2.cloudapp.net"
+      PSDscAllowPlainTextPassword = $True
+      LocalSystemAccount = $User
+    }
+  )
 }
 
-xSCOMSqlServer -ComputerName 18faz-sql1.cloudapp.net -StorageAccountName 18fazsandbox2 -ConfigurationData $cd
+xSCOMSqlServer -ComputerName 18faz-sql1.cloudapp.net,18faz-sql2.cloudapp.net -StorageAccountName 18fazsandbox2 -ConfigurationData $cd

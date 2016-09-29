@@ -51,11 +51,21 @@ Configuration xBaseDSC {
 $cd = @{
   AllNodes = @(
     @{
+      NodeName = "*"
+      DSCScratchDirPath = "C:\DSCScratchDirPath"
+    }
+    @{
+      NodeName = '18faz-sql1.cloudapp.net'
+    }
+    @{
+      NodeName = '18faz-sql2.cloudapp.net'
+    }
+    @{
       NodeName = '18faz-jen1.cloudapp.net'
       DSCScratchDirPath = "C:\DSCScratchDirPath"
     }
   )
 }
 
-xBaseDSC -ComputerName 18faz-jen1.cloudapp.net -StorageAccountName 18fazsandbox2 -ConfigurationData $cd
+xBaseDSC -ComputerName 18faz-jen1.cloudapp.net,18faz-sql1.cloudapp.net,18faz-sql2.cloudapp.net -StorageAccountName 18fazsandbox2 -ConfigurationData $cd
 Write-Host "./Run-AzureDSC -Target $computername -User 18fazure -Password $$assword -verbose -Dsc ./xBaseDSC"
