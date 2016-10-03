@@ -78,4 +78,6 @@ Then run a full test:
 kitchen test
 ```
 
-This takes: 6m52s
+This takes:
+  t2.medium: 6m02s, 5m50s
+  m3.large: 5m37s, 5m53s
