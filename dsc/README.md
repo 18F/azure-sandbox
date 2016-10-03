@@ -33,3 +33,16 @@ About some of these files:
   innately unworkable.
 - vms/init.ps1: Stand up a VM with Powershell
 - washere.ps1: An inanely simple DSC Demo.
+
+
+Notes about using DSC w/ Azure
+- One gotcha is that the target node is going to need to get remote resources.
+- So one way of doing that is mount some Azure FileStore as a UNC share on the workstation computer, and copying all of "C:\Program Files\WindowsPowerShell\modules" to I:\psmodules (and thence to the target machines)
+  - Likewise for the install media
+- It turns out that the target node does not need any Azure Powershell modules installed, it just needs to run:
+```
+net use i: \\18fazsandbox2.file.core.windows.net\install  $using:StorageKey /user:18fazsandbox2 /persistent:yes
+```
+- Logging in via `Enter-PSSession` will not see the net install, but it's there for DSC use
+- The use of `cmdkey` to persist credentials for net use did not work for me, the output of `net use /list` on the target machine was always empty.
+-
