@@ -1,5 +1,6 @@
+## Installing from the command line:
 
-How I tried to run it, got error that .NeT 3.5 not installed
+Assuming you have media installed on drive J:, and you're logged in as the admin `18fazure`, you can try this,
 
 ```
 J:\SQLServer2014SP2\Source\setup.exe /QUIET /ACTION=Install /FEATURES=SQLEngine /INSTANCENAME=MSSQLSERVER /IACCEPTSQLSERVERLICENSETERMS
@@ -7,8 +8,9 @@ J:\SQLServer2014SP2\Source\setup.exe /QUIET /ACTION=Install /FEATURES=SQLEngine 
 
 ```
 
-What I got from:
+And it will run, and fail, because you've not installed .NET 3.5..
 
+If you try the the following DSC snippet (excerpted from the SCCM DSC resources) with Start-DCS:
 ```
 $Features = "SQLEngine"
 $SQLInstanceName = "SCOMSqlServer"
@@ -22,14 +24,14 @@ xSqlServerSetup $SQLInstanceName
     Features = $Features
 }
 ```
-Leads to:
+And run with the /debug flag, you'll later get:
 ```
 [[xSQLServerSetup]SCOMSqlServer] Path: i:\SQLServer2014SP2\Source\setup.exe
 [[xSQLServerSetup]SCOMSqlServer] Arguments: /Quiet="True" /IAcceptSQLServerLicenseTerms="True" /Action="Install"
 /AGTSVCSTARTUPTYPE=Automatic /InstanceName="SCOMSQLSERVER" /Features="SQLENGINE" /SQLSysAdminAccounts="18fazure"
 ```
 
-And then hangs. I think the sticker is the /AGTSVCSTARTUPTYPE --
+And then hangs. I think the potential bug is the addition of  /AGTSVCSTARTUPTYPE.
 
 
 From the CLI, tried again with:
@@ -38,14 +40,11 @@ From the CLI, tried again with:
 J:\SQLServer2014SP2\Source\setup.exe /QUIET /ACTION=Install /FEATURES=SQLEngine /INSTANCENAME=MSSQLSERVER /IACCEPTSQLSERVERLICENSETERMS /SqlSyadminAccounts="18fazure"
 ```
 
-and it worked since DSC installed .NET 3.5. Completion didn't show a service running:
+and it worked this time since DSC installed .NET 3.5.
 
-```
-Stopped  SQLBrowser         SQL Server Browser
-Stopped  SQLSERVERAGENT     SQL Server Agent (MSSQLSERVER)
-```
+To check the install we can run `setup.exe` with the RunDiscovery action: `...Setup.exe /q /action=RunDiscovery`
 
-But RunDiscovery came out OK,  `...Setup.exe /q /action=RunDiscovery` completed with
+and it completed with:
 ```
 PS C:\Program Files\Microsoft SQL Server\120\Setup Bootstrap\Log> more .\Summary.txt
 Overall summary:
@@ -97,4 +96,6 @@ User Input Settings:
   ```
 
 Note the invocations of `setup.exe` generates `configurationFile.ini` which could
-be used to make further installs.
+be used to make further installs, since SQLServer setup.exe supports an option to run from an input configuration file.
+
+I think the approach of install SQLServer by a) building a config file from a template, and then b) calling setup.exe with that config file, is probably the easier one to generalize.
