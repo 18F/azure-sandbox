@@ -10,6 +10,8 @@ J:\SQLServer2014SP2\Source\setup.exe /QUIET /ACTION=Install /FEATURES=SQLEngine 
 
 And it will run, and fail, because you've not installed .NET 3.5..
 
+## How about DSC?
+
 If you try the the following DSC snippet (excerpted from the SCCM DSC resources) with Start-DCS:
 ```
 $Features = "SQLEngine"
@@ -24,7 +26,7 @@ xSqlServerSetup $SQLInstanceName
     Features = $Features
 }
 ```
-And run with the /debug flag, you'll later get:
+And run with the /debug flag, you'll later get the following log output:
 ```
 [[xSQLServerSetup]SCOMSqlServer] Path: i:\SQLServer2014SP2\Source\setup.exe
 [[xSQLServerSetup]SCOMSqlServer] Arguments: /Quiet="True" /IAcceptSQLServerLicenseTerms="True" /Action="Install"
@@ -33,6 +35,7 @@ And run with the /debug flag, you'll later get:
 
 And then hangs. I think the potential bug is the addition of  /AGTSVCSTARTUPTYPE.
 
+## You can then try again from Powershell:
 
 From the CLI, tried again with:
 
