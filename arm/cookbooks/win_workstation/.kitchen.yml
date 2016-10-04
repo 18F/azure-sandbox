@@ -1,0 +1,16 @@
+---
+driver:
+  name: ec2
+  ## see .kitchen.examplelocal.yml for addl config
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: windows-2012r2
+
+suites:
+  - name: default
+    run_list:
+      - recipe[motd::default]
+    attributes:
