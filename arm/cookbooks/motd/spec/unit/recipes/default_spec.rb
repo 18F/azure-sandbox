@@ -14,7 +14,7 @@ describe 'motd::default' do
     end
 
     it 'should message for the day' do
-      expect(chef_run).to render_file('/etc/motd')
+      expect(chef_run).to render_file('c:/motd.txt')
     end
   end
 end

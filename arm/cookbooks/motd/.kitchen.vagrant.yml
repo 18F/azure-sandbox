@@ -1,0 +1,26 @@
+---
+driver:
+  name: vagrant
+  customize:
+    memory: 8192
+    cpuexecutioncap: 50
+
+provisioner:
+  name: chef_zero
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: mwrock/Windows2012R2
+    transport:
+      name: winrm
+
+suites:
+  - name: default
+    run_list:
+      - recipe[motd::default]
+    verifier:
+      inspec_tests:
+        - test/recipes
+    attributes:
