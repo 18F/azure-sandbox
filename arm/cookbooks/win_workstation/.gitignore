@@ -14,3 +14,4 @@ bin/*
 
 .kitchen/
 .kitchen.local.yml
+.kitchen.ec2.yml

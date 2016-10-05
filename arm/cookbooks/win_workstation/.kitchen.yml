@@ -3,14 +3,18 @@ driver:
   name: ec2
   ## see .kitchen.examplelocal.yml for addl config
 
+provisioner:
+  name: chef_zero
+
 verifier:
   name: inspec
 
 platforms:
   - name: windows-2012r2
+  - name: ubuntu-14.04
 
 suites:
   - name: default
     run_list:
-      - recipe[motd::default]
+      - recipe[win_workstation::default]
     attributes:

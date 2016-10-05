@@ -9,6 +9,12 @@
 #  not_if 'test-path'
 #end
 
+include_recipe 'chocolatey'
+
+file 'c:\motd.txt' do
+  content 'was here'
+end
+
 chocolatey_package '7zip'
 
 chocolatey_package 'git' do

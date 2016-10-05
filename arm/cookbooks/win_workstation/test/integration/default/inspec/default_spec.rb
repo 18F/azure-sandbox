@@ -1,5 +1,5 @@
 require 'inspec'
 
-describe file('/') do
+describe file('c:/motd.txt') do
   it { should exist }
 end

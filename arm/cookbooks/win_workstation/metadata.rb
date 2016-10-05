@@ -5,3 +5,5 @@ license 'all_rights'
 description 'Installs/Configures win_workstation'
 long_description 'Installs/Configures win_workstation'
 version '0.1.0'
+
+depends 'chocolatey'
