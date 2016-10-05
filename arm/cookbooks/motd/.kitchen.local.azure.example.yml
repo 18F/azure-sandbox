@@ -1,0 +1,23 @@
+# 1 rename this to .kitchen.local.yml
+# 2 update the value for your env
+---
+driver:
+  name: azurerm
+
+driver_config:
+  subscription_id: '<subscription_id>' # From `azure account list`
+  location: 'South Central US'
+  machine_size: 'Standard_D1'
+
+platforms:
+  - name: windows2012-r2
+    driver_config:
+      image_urn: MicrosoftWindowsServer:WindowsServer:2012-R2-Datacenter:latest
+    transport:
+      name: winrm
+
+suites:
+  - name: default
+    run_list:
+      - recipe[motd::default]
+    attributes:

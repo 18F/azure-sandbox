@@ -81,3 +81,26 @@ kitchen test
 This takes:
   t2.medium: 6m02s, 5m50s
   m3.large: 5m37s, 5m53s
+
+
+## Set up with kitchen-azurerm
+
+Assumes you have already set up an Azure account.
+
+0. Install gem(s) `/azure-sandbox$ bundle`
+0. Install and configure cli `brew install azure-cli && azure login`
+0. `cp .kitchen.local.azure.example.yml .kitchen.local.yml` and customize
+0. Follow along here to create a service principal with Contributor permissions: https://github.com/pendrica/kitchen-azurerm#configuration.  For me it looked like:
+```
+azure ad app create -n kitchen --home-page http://www.contoso.org --identifier-uris https://www.contoso.org/example -p <password>
+azure ad sp create -a <AppId from last output>
+azure role assignment create --objectId <Object Id from last output> -o Contributor  -c /subscriptions/<subscription_id>/
+```
+0. Export some things for kitchen, another option is to use a `~/.azure/config` file.
+```
+export AZURE_CLIENT_ID="<AppId from above>"
+export AZURE_CLIENT_SECRET="<Password from above>"
+export AZURE_TENANT_ID="<from `azure account show`>"
+```
+
+0. `kitchen test`  If this fails trying to delete non-existing resources, `rm -rf .kitchen` and try again.
