@@ -91,7 +91,6 @@ Assumes you have already set up an Azure account.
 
 0. Install gem(s) `/azure-sandbox$ bundle`
 0. Install and configure cli `brew install azure-cli && azure login`
-0. `cp .kitchen.local.azure.example.yml .kitchen.local.yml` and customize
 0. Follow along here to create a service principal with Contributor permissions: https://github.com/pendrica/kitchen-azurerm#configuration.  For me it looked like:
 ```
 azure ad app create -n kitchen --home-page http://www.contoso.org --identifier-uris https://www.contoso.org/example -p <password>
@@ -104,6 +103,7 @@ export AZURE_CLIENT_ID="<AppId from above>"
 export AZURE_CLIENT_SECRET="<Password from above>"
 export AZURE_TENANT_ID="<from `azure account show`>"
 export SUBSCRIPTION_ID="<from `azure account list`>"
+export KITCHEN_LOCAL_YAML=$(pwd)/.kitchen.local.azure.example.yml
 ```
 
 0. `kitchen test`.  If this fails trying to delete non-existing resources, `rm -rf .kitchen` and try again.
