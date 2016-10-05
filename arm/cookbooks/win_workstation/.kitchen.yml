@@ -11,7 +11,7 @@ verifier:
 
 platforms:
   - name: windows-2012r2
-  - name: ubuntu-14.04
+#  - name: ubuntu-14.04
 
 suites:
   - name: default
