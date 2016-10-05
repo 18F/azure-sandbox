@@ -85,6 +85,8 @@ This takes:
 
 ## Set up with kitchen-azurerm
 
+https://github.com/pendrica/kitchen-azurerm
+
 Assumes you have already set up an Azure account.
 
 0. Install gem(s) `/azure-sandbox$ bundle`
@@ -96,11 +98,19 @@ azure ad app create -n kitchen --home-page http://www.contoso.org --identifier-u
 azure ad sp create -a <AppId from last output>
 azure role assignment create --objectId <Object Id from last output> -o Contributor  -c /subscriptions/<subscription_id>/
 ```
-0. Export some things for kitchen, another option is to use a `~/.azure/config` file.
+0. Configure Kitchen/azurerm. Easiest is to export some ENV vars. Another option is to use a `~/.azure/config` file, more info see kitchen-azurerm docs.
 ```
 export AZURE_CLIENT_ID="<AppId from above>"
 export AZURE_CLIENT_SECRET="<Password from above>"
 export AZURE_TENANT_ID="<from `azure account show`>"
+export SUBSCRIPTION_ID="<from `azure account list`>"
 ```
 
-0. `kitchen test`  If this fails trying to delete non-existing resources, `rm -rf .kitchen` and try again.
+0. `kitchen test`.  If this fails trying to delete non-existing resources, `rm -rf .kitchen` and try again.
+
+Benchmarks:
+
+| VM | Cores | Memory | t1 | t2 | t3 |
+| -- | -- | -- | -- | -- | -- |
+| Standard_D1 | 1 | 3.5G | 9:00 | 9:15 | 7:35 |
+| Standard_D2 | 2 | 7G | 8:01 | 9:53 | 8:04 |

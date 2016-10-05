@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2016 The Authors, All Rights Reserved.
 
-require 'spec_helper'
+require_relative '../../spec_helper'
 
 describe 'motd::default' do
   context 'When all attributes are default, on an unspecified platform' do

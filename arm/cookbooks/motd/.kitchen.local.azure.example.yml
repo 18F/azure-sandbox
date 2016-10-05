@@ -5,7 +5,7 @@ driver:
   name: azurerm
 
 driver_config:
-  subscription_id: '<subscription_id>' # From `azure account list`
+  subscription_id: '<%= ENV['SUBSCRIPTION_ID'] %>'
   location: 'South Central US'
   machine_size: 'Standard_D1'
 
@@ -20,4 +20,7 @@ suites:
   - name: default
     run_list:
       - recipe[motd::default]
-    attributes:
+    verifier:
+      inspec_tests:
+        - test/recipes
+        - spec/unit/recipes/default_spec.rb
