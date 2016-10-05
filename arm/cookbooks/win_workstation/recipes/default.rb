@@ -18,7 +18,7 @@ end
 chocolatey_package '7zip'
 
 chocolatey_package 'git' do
-  options '--params /GitAndUnixToolsOnPath'
+  options '--params /GitAndUnixToolsOnPath  /NoAutoCrlf'
 end
 
 # chocolatey_package 'atom'
