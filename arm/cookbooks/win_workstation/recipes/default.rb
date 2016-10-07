@@ -5,10 +5,12 @@
 
 include_recipe 'chocolatey'
 
-chocolatey_package '7zip'
-
 chocolatey_package 'git' do
   options '--params "/GitAndUnixToolsOnPath /NoAutoCrlf"'
 end
 
-chocolatey_package 'atom'
+%w(7zip atom chefdk).each do |package|
+  chocolatey_package package
+end
+
+include_recipe 'win_workstation::posh'

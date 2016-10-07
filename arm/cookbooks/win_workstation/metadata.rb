@@ -7,3 +7,4 @@ long_description 'Installs/Configures win_workstation'
 version '0.1.0'
 
 depends 'chocolatey'
+depends 'powershell'
