@@ -17,13 +17,13 @@ describe 'win_workstation::default' do
       expect(chef_run).to be
     end
 
-#    it 'installs chocolatey' do
-#      expect(chef_run).to run_powershell_script(/choco/)
-#    end
+    it 'installs chocolatey' do
+      expect(chef_run).to include_recipe(chocolatey)
+    end
 
-#    it 'adds atom' do
-#      expect(chef_run).to install_chocolatey_package('atom')
-#    end
+    it 'adds atom' do
+      expect(chef_run).to install_chocolatey_package('atom')
+    end
 
     it 'adds git' do
       expect(chef_run).to install_chocolatey_package('git')

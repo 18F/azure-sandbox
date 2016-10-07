@@ -17,4 +17,7 @@ suites:
   - name: default
     run_list:
       - recipe[win_workstation::default]
+    verifier:
+      inspec_tests:
+        - test/recipes
     attributes:
