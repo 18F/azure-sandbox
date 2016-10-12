@@ -17,9 +17,13 @@ Key points, with my editorializing in *ital* and/or \[brackets\]
 
 Rich Siegel has some great comments:
 > At the heart of a good puppet or chef or ansible implementation, is something that is not part of any of them. This is version control.
+
 > The pipeline is how do people work. How do they submit changes into the pipeline, how are they reviewed, tested and subsequently deployed. The vision with DSC is lost because it feels like Microsoft isn't sure how you should do this, or doesn't want to enter this space. \[_This seems to have changed w/ AA_\]
+
 >  It isn't clear how you write tests around powershell DSC code, and know its good before pushing to 100s or 1000s of nodes . How do you lint it? How do you unwind a bad push/pull. Ruby has a strong TDD community spirit, and Powershell has Pester (which I have improved) but it has not received a nod as "the go to framework". We do use it for chocolatey. Phabricator and Gerrit have become key tools for peer review and create "safety stops" to prevent bad code from moving into prod. Testing is the second most important part of config management after the version control and people need to be engaged in how testing is conducted.
+
 > Ruby is a cross platform language, powershell is not...
+
 - DSC doesn't support callback to the node or server for configuration context (but the underlying Powershell resources could)
 
 Darren Mar-Elia:
@@ -29,7 +33,7 @@ Darren Mar-Elia:
 
 Steve Murawski's notable differences, as I see them today
 - Linting - Chef has lots of options; DSC has xDSCResourceDesigner \[See also from May 2016: https://msdn.microsoft.com/en-us/powershell/dsc/authoringresourcemofdesigner and included links...\]
-- Inventory tool. Chef has Ohia \[Puppet has Facter\], DSC has nothing. Each provider needs it's own Get-/Test- function.
+- Inventory tool. Chef has Ohia \[Puppet has Facter\], DSC ecosystem seems not to use this. Each provider needs it's own Get-/Test- function.
 
 
 ###
