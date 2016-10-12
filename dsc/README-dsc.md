@@ -1,5 +1,5 @@
 N.B. This is a work-in-progress regarding our early work with DSC. As this has _not_ been published as blog post it should not
-be considered a fixed opinion of any sort, and certainly not an endorsement of any technology by the GSA or 18F. AND we would love your help! Please engage with @pburkholder on twitter or open an issue.  
+be considered a fixed opinion of any sort, and certainly not an endorsement of any technology by the GSA or 18F. AND we would love your help! Please open an issue.
 
 Context: 18F is working with an agency on some process modernization, and they are a 100% Windows shop moving into Azure. I'm trying to make some technology choices to provide them a usable app and infra pipeline in the next months.
 And that not daunting for us to introduce others to and train them on. While I can reasonably be questioned about making technology choices on behalf of end-users, that is the context I find myself in.
