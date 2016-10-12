@@ -1,3 +1,11 @@
+N.B. This is a work-in-progress regarding our early work with DSC. As this has _not_ been published as blog post is should not
+be considered a fixed opinion of any sort, and certainly not an endorsement of any technology by the GSA or 18F. AND we would love your help! Please engage with @pburkholder on twitter or open an issue.  
+
+Context: 18F is working with an agency on some process modernization, and they are a 100% Windows shop moving into Azure. I'm trying to make some technology choices to provide them a usable app and infra pipeline in the next months.
+And that not daunting for us to introduce others to and train them on. While I can reasonably questioned about making technology choices on behalf of end-users, that is the context I find myself in.
+
+This README summarize some of my experiences, and some of those in the community, with using DSC/Azure Automation, with an end goal making a recommendation on what tools to use for infrastructure-as-code.
+
 ## Powershell.org postings
 
 ###  Read [Chef v. DSC implementation](https://powershell.org/forums/topic/chef-vs-dsc-implementation/) from April 2016.
