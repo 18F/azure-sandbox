@@ -1,4 +1,4 @@
-## Powershell.org postings
+## Powershell.org postings and related reading
 
 ###  Read [Chef v. DSC implementation](https://powershell.org/forums/topic/chef-vs-dsc-implementation/) from April 2016.
 Key points, with my editorializing in *ital* and/or \[brackets\]
@@ -36,7 +36,21 @@ Steve Murawski's notable differences, as I see them today
 - Inventory tool. Chef has Ohia \[Puppet has Facter\], DSC ecosystem seems not to use this. Each provider needs it's own Get-/Test- function.
 
 
-###
+
+
+
+### [DSC ConfigurationData Blocks in a World of Cattle](https://powershell.org/2016/10/11/dsc-configurationdata-blocks-in-a-world-of-cattle/)
+
+Key point here is that node name reported from node to pull server need not be unique. Nothing at https://msdn.microsoft.com/en-us/powershell/dsc/configdata implies uniqueness constraints.
+
+>  "NodeName" is a misleading setting, but if you think of it as a role, which could be applied to multiple actual machines, then it makes a lot more sense that way.
+
+It's not clear to me where the nodename comes from, possibly from LCM config as in:
+
+```
+Set-DscLocalConfigurationManager -Path ./localhost.meta.mof -ComputerName NODE1
+```
+
 
 ## Update 12 Oct 2016
 
