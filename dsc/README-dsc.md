@@ -39,15 +39,45 @@ I would really like DSC to work out because:
 
 I've been using declarative configuration management systems since 2004, with CfEngine2, then Puppet, then Chef, and with a smattering of Ansible. With that background, I thought in mid-September 2016 that two weeks would be sufficient to get a handle on the basis of DSC.
 
-However, my initial foray into DSC-land was rather frustrating, and my initial write-up was [gently mocked at Powershell.org](https://powershell.org/2016/10/12/no-easy-button-for-configuration-management/) (see the ['Initial Post' below for my original commentary](#initial-post)). While I never expected DSC (or any CF system) to be "easy," my initial poor impression stemmed from a few things not related to DSC itself:
+However, my initial foray into DSC-land was rather frustrating, and [my initial write-up was](https://github.com/18F/azure-sandbox/blob/748b42bf8f2315c91e042b3db2527815b5064f73/dsc/README-dsc.md) [gently mocked at Powershell.org](https://powershell.org/2016/10/12/no-easy-button-for-configuration-management/) (see the ['Initial Post' below for my original commentary](#initial-post)). While I never expected DSC (or any CF system) to be "easy," my initial poor impression stemmed from a few things not related to DSC itself:
 
 * My initial impressions may have been somewhat tainted by my relative inexperience in Windows and PowerShell, irrespective of DSC itself.
 * Further, I did not have access to a Windows workstation or local virtualization, so relying on RDP to remote VMS probably tainted my overall experience.
 * I used DSC push, instead of DSC pull, which, as Don Jones says: "DSC push mode is basically scratching the surface. You didn’t really explore it if you didn’t get into how Pull affects the architecture"
 
-## Powershell.org postings and related reading
+## Pricing
+
+* Chef OpenSource: Free
+* Chef Automate: $137/node/annum (includes Workflow, Compliance, Visibility)
+* DSC Pull Server: Free
+* DSC Azure Automation: $72/node/annum (no analog to Chef Compliance or Workflow)
+
+## Resources
 
 Summaries of key DSC literature, with dates as this space is moving pretty fast.
+
+### Presentations
+
+The Devopsification of Windows Server:
+
+
+
+
+
+####  MS Channel9 DevOps Dimension
+
+https://channel9.msdn.com/Shows/DevOps-Dimension/13--The-Release-Pipeline-Model-Transform-IT-Ops-with-DevOps-Practices
+
+https://channel9.msdn.com/Shows/DevOps-Dimension/9--DevOps--Deployment-Automation-Best-Practices
+
+https://msdn.microsoft.com/en-us/powershell/dsc/whitepapers#the-release-pipeline-model (Need to read this)
+
+
+### Books
+
+[The DSC Book](https://leanpub.com/the-dsc-book) - Don Jones, Oct 2016, Leanpub: Up-to-date, usefully opinionated. Doesn't cover Pester testing.
+
+[Learning Powershell DSC](https://www.packtpub.com/networking-and-servers/learning-powershell-dsc) - James Pogran, Oct 2015, Pakt Pub: WMF5 was still rough around the edges on publication. Seems to have better debugging sections than Jones's book.
 
 ###  April 2016: [Chef v. DSC implementation](https://powershell.org/forums/topic/chef-vs-dsc-implementation/)
 Key points, with my editorializing in *ital* and/or \[brackets\]
@@ -101,11 +131,45 @@ Set-DscLocalConfigurationManager -Path ./localhost.meta.mof -ComputerName NODE1
 TODO: Dig into how this works
 
 
-### Pricing
+### Useful resources at https://github.com/PowerShellOrg
 
-* Chef: OpenSource- Free, Chef Automate: $137/node/annum (includes Workflow, Compliance, Visibility)
-* DSC Pull Server: Free
-* DSC Azure Automation: $72/node/annum (no analog to Chef Compliance or Workflow)
+- StackExchange DSC resources: Evidently Murawski got that going, not sure if it's a real thing, only
+three commits since 21 No 2014
+- SMurawski's POSH-driven DSC tutorial: https://github.com/PowerShellOrg/dsc-summit-precon
+
+
+## Is anyone using DSC 'for real'?
+
+Google 'Who uses DSC in production?' or 'Powershell DSC in production'
+
+https://blog.devopsguys.com/tag/desired-state-configuration/:
+https://www.devopsguys.com/2015/04/15/dsc-and-octopus-deploy-integration/
+@msh_dave @devopsguys Do you or yr clients use DSC at scale of 100+ nodes and 10+ roles? Seeking examples of DSC w/o Chef/Puppet in the mix.
+
+http://www.meetup.com/Twin-Cities-PowerShell-User-Group/events/219972551/ (need to follow up)
+@netgainhosting @corydwood Has yr DSC work scaled to 100+node, 10+roles w/o using Chef/Puppet? Or know of shops w/ DSC at that scale?
+
+https://foxdeploy.com/2016/09/20/part-vi-in-depth-building-the-foxdeploy-dsc-designer/
+https://www.linkedin.com/pulse/why-i-am-investing-desired-state-configuration-kristian-nese
+
+Are there shops live w/ DSC-pull for 100+nodes 10+roles w/ code pipelines? Need examples before plowing ahead. #help @foxdeploy @dtrawler
+Are there shops live w/ DSC-pull for 100+nodes 10+roles w/ code pipelines? Need examples before plowing ahead. @ubergeekgirl @KristianNese
+Are there shops live w/ DSC-pull for 100+nodes 10+roles w/ code pipelines? Need examples before plowing ahead. @stevenmurawski @majst32
+
+https://www.reddit.com/r/sysadmin/comments/50huqd/how_many_of_you_actually_use_powershell_dsc_in/
+Answer: no one? (August 2016)
+
+http://inedo.com/otter - Wah?
+
+https://www.upguard.com/blog/powershell-dsc-with-upguard - Huh?
+
+Shops that are running at modest scale w/ DSC:
+- Chris Hunt, @logicaldiagram, 1000 nodes @ ticketmaster https://twitter.com/LogicalDiagram/status/786971759501160448
+- DevOps Trawler @dtrawler, 140 nodes, https://twitter.com/DTrawler/status/786970813475934209
+- Cory Woods @netgainhosting, 300 nodes, https://twitter.com/CoryDWood/status/786968517203619840
+-
+
+
 
 ## Update 12 Oct 2016
 
@@ -156,10 +220,11 @@ instead of jamming a lot of logic in the script (which should be a high-level de
   - _Update 13 Oct_: This is an unfair comment on my part. Chef/Puppet/Ansible all have the same risk of low-quality
 - Mysterious hangs and locked runs - e.g. my experience w/ xSQLServerSetup resource.
 - Code requires lots of boiler plate and copy-pasa. See e.g. the SharePoint HQ resource.
-  - _Update from orginal post_: As just one example from the SharePoint resource, these three codeblocks are _identical_, so for a 240-line module, fully 66 lines are the same param block repeated three times.:
+  - _Update 13 Oct_: As just one example from the SharePoint resource, these three codeblocks are _identical_, so for a 240-line module, fully 66 lines are the same param block repeated three times.:
     - https://github.com/PowerShell/SharePointDsc/blob/master/Modules/SharePointDsc/DSCResources/MSFT_SPInstall/MSFT_SPInstall.psm1#L5-L27
     - https://github.com/PowerShell/SharePointDsc/blob/master/Modules/SharePointDsc/DSCResources/MSFT_SPInstall/MSFT_SPInstall.psm1#L68-L90
     - https://github.com/PowerShell/SharePointDsc/blob/master/Modules/SharePointDsc/DSCResources/MSFT_SPInstall/MSFT_SPInstall.psm1#L199-L221
+  - _Update 14 Oct_: Class-based resources seem to alleviate this issue. See e.g. https://flynnbundy.com/2016/05/16/getting-started-with-class-based-dsc-resources/
 - ConfigurationData seems tied to notion of long-lived named nodes (pets), _although I may just be poorly informed here_.
   - _Update 13 Oct_: See correction above.
 - Authoring/publishing is certainly no better than Chef/Puppet, and quite possibly worse
