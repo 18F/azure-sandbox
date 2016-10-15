@@ -6,14 +6,14 @@ However, even in a monoculture of Windows and Powershell, DSC is still not matur
 
 **Conclusion: Oct 13: Merits further study**
 
-### _Nota Bene_
+## _Nota Bene_
 
 This is a work-in-progress regarding our early work with DSC. As this has _not_ been formally published  it should not
 be considered a fixed opinion of any sort, and certainly not an endorsement of any technology by the GSA or 18F. AND we would love your help! Please open an issue if you have further information or opinions to add.
 
 This README summarize our experiences, and some of those in the community, with using DSC/Azure Automation, with an end goal of making a recommendation on which tools to experiment with first for larger-scale infrastructure-as-code.
 
-### Context
+## Context
 
 18F is working with an agency on some process modernization, and they are a 100% Windows shop moving into Azure. I'm trying to make some technology choices to provide them a usable app and infra pipeline in the next months. The systems in the initial pipeline environment include:
 
@@ -30,7 +30,7 @@ I would like to consider all these systems as crops, not houseplants (or cattle,
 - SCCM: I have no experience with SCCM and will let the folks at partner agency w/ SCCM experience help determine what role it should play.
 
 
-### Chef or DSC?
+## Chef or DSC?
 
 I would really like DSC to work out because:
 - eventual users and owners are more comfortable with Windows and Powershell than they are with Ruby, Linux and open-source in general
@@ -52,26 +52,79 @@ However, my initial foray into DSC-land was rather frustrating, and [my initial 
 * DSC Pull Server: Free
 * DSC Azure Automation: $72/node/annum (no analog to Chef Compliance or Workflow)
 
+Other players in this space I know nothing about:
+- Indeo Otter: http://inedo.com/otter
+- Upguard: https://www.upguard.com/blog/powershell-dsc-with-upguard
+
+## Is anyone using DSC 'for real'?
+
+Google 'Who uses DSC in production?' or 'Powershell DSC in production' and you don't get much:
+
+https://www.reddit.com/r/sysadmin/comments/50huqd/how_many_of_you_actually_use_powershell_dsc_in/
+
+Answer: no one? (August 2016)
+
+So, I went on a Tweet-spam storm on 14 October 2016 to try to scare up more real examples: <br>
+https://twitter.com/pburkholder/status/786968790819074048<br>
+https://twitter.com/pburkholder/status/786965389964091392<br>
+https://twitter.com/pburkholder/status/786965952969793536<br>
+https://twitter.com/pburkholder/status/786967131422396417<br>
+https://twitter.com/pburkholder/status/786967362213974017<br>
+https://twitter.com/pburkholder/status/786967643907579905<br>
+https://twitter.com/pburkholder/status/786967643907579905<br>
+
+
+And found at least these shops that are running at modest scale w/ DSC:
+- Flynn Bundy @bundyfx, 100 nodes, 15 roles: https://twitter.com/Bundyfx/status/787201763501801473
+- Chris Hunt, @logicaldiagram, 1000 nodes @ ticketmaster https://twitter.com/LogicalDiagram/status/786971759501160448
+- DevOps Trawler @dtrawler, 140 nodes, https://twitter.com/DTrawler/status/786970813475934209
+- Cory Woods @netgainhosting, 300 nodes, https://twitter.com/CoryDWood/status/786968517203619840
+
+One detailed description that came back:
+
+> Hey mate,
+So we use DSC to manage around 100 nodes with about 15 roles.
+
+> All Windows Server 2012 R2 Core, Basically we do it all from Github.
+We have a central repository that holds the Configuration Data which outlines the roles and the nodes attached to those roles.
+Then we have a Generation folder that holds the LCM configuration files and another folder for the main configuration script.
+
+> Essentially taking the three main components of DSC (config data, meta mof generation and mof generation) and giving them their own section in the repo.
+
+> We make all changes in Pull Requests to the Repo which trigger our CI/CD pipeline in Appveyor.
+
+> Appveyor will take the repo and run through a list of Pester tests that our DSC Configuration data file should follow (no duplicates, valid names, roles etc) then if the tests pass it (Appveyor) will run the main .ps1 file which will create all the meta.mof files and the .mof files for all the roles.
+
+> After it (Appveyor) has created all the files required for DSC to function it will zip them up and put the zip file (as a nuget package) into our private appveyor nuget feed.
+
+> We then have our Pull Server (with its own DSC config) to look at the feed and check for any new version of the DSC nuget package.
+If it finds a new version (checks every 30 mins) it will pull it down and unzip all the meta mofs and mof files into the location on disk that all nodes will look for new .mof files.
+But this leaves us with the issue of: How do nodes get told where to look for their config? (aka LCM config)
+
+> We have another configuration on the pull server that checks through the meta.mof files once they get pulled down and does a check against all nodes to ensure they are pulling the correct config (role).
+
+> Essentially what this does is allows us to alter any of the LCM config in github and ensure us that the pull server will connect with those nodes and make sure they pulling what it says they should be.
+
+> If they're not pulling what we said or we have updated any of the config in the meta.mof generation in github the pull server will make sure its updates the LCM on those nodes then report its changes into out Slack Channel.
+
+> Hopefully, this makes sense, feel free to hit me back with any questions. But I must say it works perfectly. We've built a fair few custom in-house modules that all fall into the same appveyor style deployment pipeline - works great.
+
 ## Resources
 
 Summaries of key DSC literature, with dates as this space is moving pretty fast.
 
 ### Presentations
 
-The Devopsification of Windows Server:
+[The Devopsification of Windows Server](https://www.youtube.com/watch?v=6Mn10BiaVaw) Jeff Snover, WinOps 2016.  **Recommend to understand vision, direction**
 
+[Gain insight into a Release Pipeline Model](https://myignite.microsoft.com/videos/22116) - This video from MS Ignite, Sept 2016, should be titled, **Transform your organization with Powershell DSC** 1h25m w/ Michael Greene, Mark Gray. **Need to watch**. Related resources:
+- [Whitepaper: The release pipeline model](https://msdn.microsoft.com/en-us/powershell/dsc/whitepapers#the-release-pipeline-model)
+- [Interview MSDN channel 9 DevOps-Dimension](https://channel9.msdn.com/Shows/DevOps-Dimension/13--The-Release-Pipeline-Model-Transform-IT-Ops-with-DevOps-Practices)
+- [Also from DevOps-Dimension - Octopus Deployment Devops Best Practices](https://channel9.msdn.com/Shows/DevOps-Dimension/9--DevOps--Deployment-Automation-Best-Practices)
 
+[Configuration management with Azure Automation, DSC, Cloud]( https://channel9.msdn.com/Events/WinOps/WinOps-Conf-2016/Configuration-Management-with-Azure-Automation-DSC-Cloud--On-Prem-Windows--Linux) - Ed Wilson (Scripting Guy) - WinOps Conference, June 2016. **OK overview**
 
-
-
-####  MS Channel9 DevOps Dimension
-
-https://channel9.msdn.com/Shows/DevOps-Dimension/13--The-Release-Pipeline-Model-Transform-IT-Ops-with-DevOps-Practices
-
-https://channel9.msdn.com/Shows/DevOps-Dimension/9--DevOps--Deployment-Automation-Best-Practices
-
-https://msdn.microsoft.com/en-us/powershell/dsc/whitepapers#the-release-pipeline-model (Need to read this)
-
+[DSC acceptance testing w/ Test-Kitchen](http://mspsug.com/2016/05/17/video-acceptance-testing-powershell-desired-state-configuration-with-test-kitchen/) - Steven Murawski, Spring 2016.
 
 ### Books
 
@@ -79,7 +132,9 @@ https://msdn.microsoft.com/en-us/powershell/dsc/whitepapers#the-release-pipeline
 
 [Learning Powershell DSC](https://www.packtpub.com/networking-and-servers/learning-powershell-dsc) - James Pogran, Oct 2015, Pakt Pub: WMF5 was still rough around the edges on publication. Seems to have better debugging sections than Jones's book.
 
-###  April 2016: [Chef v. DSC implementation](https://powershell.org/forums/topic/chef-vs-dsc-implementation/)
+### Posts
+
+####  April 2016: [Chef v. DSC implementation](https://powershell.org/forums/topic/chef-vs-dsc-implementation/)
 Key points, with my editorializing in *ital* and/or \[brackets\]
 - Link: https://powershell.org/2014/05/14/why-puppet-vs-dsc-isnt-even-a-thing/ (May 2014)
 - Link: https://blog.chef.io/2014/09/03/why-chef-dsc-revisited/ (Sept 2014)
@@ -92,7 +147,7 @@ Key points, with my editorializing in *ital* and/or \[brackets\]
   - LCM Agent Management \[No idea - help?\]
   - DSC doesn't have test-kitchen \[but it does now\]
 
-###  May 2014: [Why Puppet vs DSC isn't even a thing](https://powershell.org/2014/05/14/why-puppet-vs-dsc-isnt-even-a-thing/)
+####  May 2014: [Why Puppet vs DSC isn't even a thing](https://powershell.org/2014/05/14/why-puppet-vs-dsc-isnt-even-a-thing/)
 
 Rich Siegel has some great comments:
 > At the heart of a good puppet or chef or ansible implementation, is something that is not part of any of them. This is version control.
@@ -108,14 +163,14 @@ Rich Siegel has some great comments:
 Darren Mar-Elia:
 > I think the DSC integration work that Chef showed almost a year ago could provide the best of both worlds
 
-### Sept 2014: [WHY CHEF + DSC? (REVISITED)](https://blog.chef.io/2014/09/03/why-chef-dsc-revisited/)
+#### Sept 2014: [WHY CHEF + DSC? (REVISITED)](https://blog.chef.io/2014/09/03/why-chef-dsc-revisited/)
 
 Steve Murawski's notable differences, as I see them today
 - Linting - Chef has lots of options; DSC has xDSCResourceDesigner \[See also from May 2016: https://msdn.microsoft.com/en-us/powershell/dsc/authoringresourcemofdesigner and included links...\]
 - Inventory tool. Chef has Ohia \[Puppet has Facter\], DSC ecosystem seems not to use this. Each provider needs it's own Get-/Test- function.
 
 
-### Oct 2016: [DSC ConfigurationData Blocks in a World of Cattle](https://powershell.org/2016/10/11/dsc-configurationdata-blocks-in-a-world-of-cattle/)
+#### Oct 2016: [DSC ConfigurationData Blocks in a World of Cattle](https://powershell.org/2016/10/11/dsc-configurationdata-blocks-in-a-world-of-cattle/)
 
 It's not been clear with the MOF generation processing being linked to `NodeName` how to apply DSC as roles
 to nodes that don't exist yet. Key point here is that node name reported from node to pull server need not be unique. Nothing at https://msdn.microsoft.com/en-us/powershell/dsc/configdata implies uniqueness constraints.
@@ -127,8 +182,14 @@ It's not clear to me where the nodename comes from, possibly from LCM config as 
 ```
 Set-DscLocalConfigurationManager -Path ./localhost.meta.mof -ComputerName NODE1
 ```
-
 TODO: Dig into how this works
+
+
+#### Flynn Bundy's blog
+
+See https://flynnbundy.com/category/dsc-2/, I like his intro to WMF5 class-based resources, but note that Don Jones warns in The DSC Book:
+
+>   there’s a downside to class-based modules at this time, which is that they don’t support filename-based versioning. This makes them a little problematic in real-world applications, because you can’t have two versions of a class-based module living side-by-side on nodes or on a pull server.
 
 
 ### Useful resources at https://github.com/PowerShellOrg
@@ -138,40 +199,10 @@ three commits since 21 No 2014
 - SMurawski's POSH-driven DSC tutorial: https://github.com/PowerShellOrg/dsc-summit-precon
 
 
-## Is anyone using DSC 'for real'?
-
-Google 'Who uses DSC in production?' or 'Powershell DSC in production'
-
-https://blog.devopsguys.com/tag/desired-state-configuration/:
-https://www.devopsguys.com/2015/04/15/dsc-and-octopus-deploy-integration/
-@msh_dave @devopsguys Do you or yr clients use DSC at scale of 100+ nodes and 10+ roles? Seeking examples of DSC w/o Chef/Puppet in the mix.
-
-http://www.meetup.com/Twin-Cities-PowerShell-User-Group/events/219972551/ (need to follow up)
-@netgainhosting @corydwood Has yr DSC work scaled to 100+node, 10+roles w/o using Chef/Puppet? Or know of shops w/ DSC at that scale?
-
-https://foxdeploy.com/2016/09/20/part-vi-in-depth-building-the-foxdeploy-dsc-designer/
-https://www.linkedin.com/pulse/why-i-am-investing-desired-state-configuration-kristian-nese
-
-Are there shops live w/ DSC-pull for 100+nodes 10+roles w/ code pipelines? Need examples before plowing ahead. #help @foxdeploy @dtrawler
-Are there shops live w/ DSC-pull for 100+nodes 10+roles w/ code pipelines? Need examples before plowing ahead. @ubergeekgirl @KristianNese
-Are there shops live w/ DSC-pull for 100+nodes 10+roles w/ code pipelines? Need examples before plowing ahead. @stevenmurawski @majst32
-
-https://www.reddit.com/r/sysadmin/comments/50huqd/how_many_of_you_actually_use_powershell_dsc_in/
-Answer: no one? (August 2016)
-
-http://inedo.com/otter - Wah?
-
-https://www.upguard.com/blog/powershell-dsc-with-upguard - Huh?
-
-Shops that are running at modest scale w/ DSC:
-- Chris Hunt, @logicaldiagram, 1000 nodes @ ticketmaster https://twitter.com/LogicalDiagram/status/786971759501160448
-- DevOps Trawler @dtrawler, 140 nodes, https://twitter.com/DTrawler/status/786970813475934209
-- Cory Woods @netgainhosting, 300 nodes, https://twitter.com/CoryDWood/status/786968517203619840
--
 
 
 
-## Update 12 Oct 2016
+## Update 12 Oct 2016 conversation w/ Don Jones:
 
 (Sorry for reverse chronological order, but I think the update is more interesting than the original content)
 
