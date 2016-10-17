@@ -109,6 +109,24 @@ But this leaves us with the issue of: How do nodes get told where to look for th
 
 > Hopefully, this makes sense, feel free to hit me back with any questions. But I must say it works perfectly. We've built a fair few custom in-house modules that all fall into the same appveyor style deployment pipeline - works great.
 
+## Can Chef work in a Windows monoculture?
+
+## What does SCCM do, anyhow?
+
+https://donjones.com/2014/06/11/why-i-think-sccm-will-probably-not-survive/. From the comments:
+>  I see Microsoft BEGINNING to line up the functional replacements for SCCM’s existing features. Those first steps, combined with SCCM’s non-cloud-focus, is what makes me think Microsoft is indeed walking down a path to replace SCCM.
+
+https://redmondmag.com/articles/2015/02/01/predicting-the-future-of-system-center.aspx:
+- Configuration Manager
+  - (already compiles MOFs?)
+- Orchestator
+  - Opalis byebye in favor of SMA = service management Automation
+
+
+https://blogs.technet.microsoft.com/hybridcloud/2016/10/12/managing-the-software-defined-datacenter-with-system-center-2016/ GA announced 12 Oct 2016
+
+https://www.microsoft.com/en-us/cloud-platform/operations-management-suite - Home page
+
 ## Resources
 
 Summaries of key DSC literature, with dates as this space is moving pretty fast.
@@ -117,10 +135,24 @@ Summaries of key DSC literature, with dates as this space is moving pretty fast.
 
 [The Devopsification of Windows Server](https://www.youtube.com/watch?v=6Mn10BiaVaw) Jeff Snover, WinOps 2016.  **Recommend to understand vision, direction**
 
-[Gain insight into a Release Pipeline Model](https://myignite.microsoft.com/videos/22116) - This video from MS Ignite, Sept 2016, should be titled, **Transform your organization with Powershell DSC** 1h25m w/ Michael Greene, Mark Gray. **Need to watch**. Related resources:
-- [Whitepaper: The release pipeline model](https://msdn.microsoft.com/en-us/powershell/dsc/whitepapers#the-release-pipeline-model)
-- [Interview MSDN channel 9 DevOps-Dimension](https://channel9.msdn.com/Shows/DevOps-Dimension/13--The-Release-Pipeline-Model-Transform-IT-Ops-with-DevOps-Practices)
-- [Also from DevOps-Dimension - Octopus Deployment Devops Best Practices](https://channel9.msdn.com/Shows/DevOps-Dimension/9--DevOps--Deployment-Automation-Best-Practices)
+[Gain insight into a Release Pipeline Model](https://myignite.microsoft.com/videos/22116) - This video from MS Ignite, Sept 2016, should be titled, **Transform your organization with Powershell DSC** 1h25m w/ Michael Greene, Mark Gray. **Need to watch**.
+- comments
+  - TFS or jenkins for Build
+  - "Integration and Acceptance tests done after release" ... to each pre-prod env as well as after release.
+  - Patch management: at least five ways, no standard best practice
+  - Getting Started (Slide):
+    - Use source controls
+    - Don't expect to cut over instantly
+    - Require tests
+    - Keep options open (use the tools that work for you, demo happened to be TFS...)
+    - Old and New tools can be integrated (not sure I agree)
+  - Use JEA to prevent "Heroes" from changing server settings randomly.
+- Related resources:
+  - [Whitepaper: The release pipeline model](https://msdn.microsoft.com/en-us/powershell/dsc/whitepapers#the-release-pipeline-model)
+  - [Interview MSDN channel 9 DevOps-Dimension](https://channel9.msdn.com/Shows/DevOps-Dimension/13--The-Release-Pipeline-Model-Transform-IT-Ops-with-DevOps-Practices)
+  - [Also from DevOps-Dimension - Octopus Deployment Devops Best Practices](https://channel9.msdn.com/Shows/DevOps-Dimension/9--DevOps--Deployment-Automation-Best-Practices)
+  - [Build and operate a software-defined datacenter](https://myignite.microsoft.com/videos/20645)
+    - TODO - watch this
 
 [Configuration management with Azure Automation, DSC, Cloud]( https://channel9.msdn.com/Events/WinOps/WinOps-Conf-2016/Configuration-Management-with-Azure-Automation-DSC-Cloud--On-Prem-Windows--Linux) - Ed Wilson (Scripting Guy) - WinOps Conference, June 2016. **OK overview**
 
