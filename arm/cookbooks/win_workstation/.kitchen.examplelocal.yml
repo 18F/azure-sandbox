@@ -1,0 +1,13 @@
+# 1 rename this to .kitchen.local.yml
+# 2 update the value for your env
+---
+driver:
+  name: ec2
+  aws_ssh_key_id: peter.burkholder.aws
+  instance_type: t2.medium
+  security_group_ids: ["sg-eeee0000"]
+  subnet_id: subnet-4321beef
+
+transport:
+  username: 'adminroot'
+  password: '1secureP@ssword'
