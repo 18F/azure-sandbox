@@ -23,4 +23,3 @@ suites:
     verifier:
       inspec_tests:
         - test/recipes
-        - spec/unit/recipes/default_spec.rb

@@ -108,7 +108,7 @@ export KITCHEN_LOCAL_YAML=$(pwd)/.kitchen.local.azure.example.yml
 
 0. `kitchen test`.  If this fails trying to delete non-existing resources, `rm -rf .kitchen` and try again.
 
-Benchmarks:
+Full integration tests against Win2012R2 take a _long_ time. Here's what we observed in minutes:seconds for various instance types:
 
 | VM | Cores | Memory | t1 | t2 | t3 |
 | -- | -- | -- | -- | -- | -- |
