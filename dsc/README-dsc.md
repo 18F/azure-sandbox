@@ -29,6 +29,50 @@ I would like to consider all these systems as crops, not houseplants (or cattle,
 - DSC w/ AzureAutomation
 - SCCM: I have no experience with SCCM and will let the folks at partner agency w/ SCCM experience help determine what role it should play.
 
+### How do Chef and DSC compare? Executive Summary
+
+Chef and DSC both extend an existing language (Ruby, Powershell) to express system
+state in a declarative manner, and a client (Chef-Client, LocalConfigManager) to
+idempotently converge a system to that desired state.
+
+Chef-Client exists in the context of mature framework to write, share, package, test and apply the configuration.  DSC is much more of a building-block technology that can work in multiple frameworks. Some frameworks include:
+- Chef itself, with the `dsc_resource`
+- DSC Push over CIM connections
+- DSC Pull services with either Azure Automation or with a standalone DSC Pull Server
+- DSC Resources within MS Service Center (we have not examined this option yet)
+Since DSC is _not_ a framework, when I speak of "Using DSC" I mean using a **test and release pipeline of version-controlled system artifacts, written in the DSC language, and using a DSC Pull Server such as Azure Automation.**
+
+DSC Adoption: Risks & Benefits
+- Risks:
+  - We would need to write or research more tooling ourselves, e.g. test processes and some resources.
+    - The DSC community has not settled on as many standard-practices as Chef has. So we would need to sort through what other folks are doing and decide what will work for us.  
+    - We are already building community connection to help with process determination
+  - We would have a hard time extending DSC into any future Linux-based servers.
+  - We would see a slower start to automation as our team hones our Powershell skills and learns DSC.
+- Benefits:
+  - We might get significant support from Microsoft since they need more DSC case studies within the Fed space
+  - We win over agency skeptics reluctant to adopt Ruby-based app
+  - We win over agency skeptics reluctant to adopt Linux servers
+  - We can build upon the existing Powershell expertise within the agency
+  - Should we decide to replace DSC Pull, we can re-use DSC resources as components of any future Chef implementation
+    - For example: Suppose we have `Agency_My_App` which comprises DSC resources for `Agency_IIS_DSC` and `Agency_dotNet_DSC` and `Agency_SQLServer_DSC`. If the DSC pull model is not working for us, we can build a Chef cookbook `Agency_My_App_cookbook` and re-use the DSC for `Agency_IIS_DSC` and `Agency_SQLServer_DSC`, etc., without having to rewrite all the lower-level code.
+
+## Pricing
+
+* Chef OpenSource: Free
+* Chef Automate: $137/node/annum (includes Workflow, Compliance, Visibility)
+* DSC Pull Server: Free
+* DSC Azure Automation: $72/node/annum (no analog to Chef Compliance or Workflow)
+
+## An analogy
+
+This is like comparing an Audi A3 turbodiesel to a petrol-powered TukTuk
+3wheeler.  The Audio A3 is clearly better in every respect until you realize
+you'll be living in a country where only 10% of service stations carry diesel, all of the mechanics know
+TukTuks intimately, and the speed limit is 30mph everywhere anyhow.
+
+(And you may think the TukTuk is more fun anyhow....)
+
 
 ## Chef or DSC?
 
@@ -45,12 +89,8 @@ However, my initial foray into DSC-land was rather frustrating, and [my initial 
 * Further, I did not have access to a Windows workstation or local virtualization, so relying on RDP to remote VMS probably tainted my overall experience.
 * I used DSC push, instead of DSC pull, which, as Don Jones says: "DSC push mode is basically scratching the surface. You didn’t really explore it if you didn’t get into how Pull affects the architecture"
 
-## Pricing
 
-* Chef OpenSource: Free
-* Chef Automate: $137/node/annum (includes Workflow, Compliance, Visibility)
-* DSC Pull Server: Free
-* DSC Azure Automation: $72/node/annum (no analog to Chef Compliance or Workflow)
+### Other Players
 
 Other players in this space I know nothing about:
 - Indeo Otter: http://inedo.com/otter
@@ -137,6 +177,8 @@ Summaries of key DSC literature, with dates as this space is moving pretty fast.
 
 [Gain insight into a Release Pipeline Model](https://myignite.microsoft.com/videos/22116) - This video from MS Ignite, Sept 2016, should be titled, **Transform your organization with Powershell DSC** 1h25m w/ Michael Greene, Mark Gray. **Need to watch**.
 - comments
+  - Environmental configs should be build with PSake
+  - Need slides...
   - TFS or jenkins for Build
   - "Integration and Acceptance tests done after release" ... to each pre-prod env as well as after release.
   - Patch management: at least five ways, no standard best practice
