@@ -1,0 +1,28 @@
+---
+provisioner:
+  name: dsc
+
+driver:
+  name: vagrant
+  vm_hostname: false # do not bother trying to change the hostname (sometimes fails)
+  communicator: winrm
+  linked_clones: true
+  gui: false
+  customize:
+    cpus: 2
+    memory: 2048
+
+transport:
+  name: winrm
+
+verifier:
+  name: pester
+
+platforms:
+  - name: windows_2012r2
+    driver:
+      box: mwrock/Windows2012R2
+
+suites:
+  #- name: cWebsite_StopWebsite
+  - name: cWebsite_StartWebsite
