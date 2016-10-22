@@ -1,2 +1,4 @@
 # Ignore xSomeDSCResource/
 x*/
+
+.kitchen.local.yml
