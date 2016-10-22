@@ -1,6 +1,9 @@
 ---
 provisioner:
   name: dsc
+  dsc_local_configuration_manager_version: wmf5
+  dsc_local_configuration_manager:
+    reboot_if_needed: true
 
 driver:
   name: vagrant
@@ -9,14 +12,14 @@ driver:
   linked_clones: true
   gui: false
   customize:
-    cpus: 2
+    cpus:
     memory: 2048
 
 transport:
   name: winrm
 
 verifier:
-  name: pester
+  name: inspec
 
 platforms:
   - name: windows_2012r2
@@ -24,5 +27,4 @@ platforms:
       box: mwrock/Windows2012R2
 
 suites:
-  #- name: cWebsite_StopWebsite
-  - name: cWebsite_StartWebsite
+  - name: create_DomainController

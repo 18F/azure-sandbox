@@ -1,0 +1,23 @@
+---
+driver:
+  name: ec2
+  aws_ssh_key_id: your_key
+  instance_type: t2.large
+  security_group_ids: ["sg-yoursgid"]
+  subnet_id: subnet-yours
+  tags:
+    name: dsc_domain_controller
+    project: tla_cloud_beta
+    billing_code: "406"
+    billing_description: "406 Transformation Services/Cloud Migration Beta"
+
+transport:
+  name: winrm
+  elevated: true
+  username: 'username'
+  password: 'password'
+
+platforms:
+  - name: windows-2012r2-noprep
+    driver:
+      image_id: ami-d33363c4
