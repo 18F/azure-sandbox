@@ -6,4 +6,9 @@ end
 
 describe windows_feature('AD-Domain-Services') do
    it { should be_installed }
- end
+end
+
+# demo of a port range test
+describe port.where { protocol =~ /tcp/ && port > 22 && port < 80 } do
+  it { should_not be_listening }
+end
