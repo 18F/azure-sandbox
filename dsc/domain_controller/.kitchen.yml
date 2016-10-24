@@ -4,6 +4,8 @@ provisioner:
   dsc_local_configuration_manager_version: wmf5
   dsc_local_configuration_manager:
     reboot_if_needed: true
+  modules_from_gallery:
+    - xActiveDirectory
 
 driver:
   name: vagrant
@@ -28,3 +30,8 @@ platforms:
 
 suites:
   - name: TLABetaDomainController
+    provisioner:
+      configuration_data:
+        AllNodes:
+          - nodename: localhost
+            PSDscAllowPlainTextPassword: '$true'
