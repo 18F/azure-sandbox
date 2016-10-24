@@ -33,5 +33,5 @@ suites:
     provisioner:
       configuration_data:
         AllNodes:
-          - nodename: localhost
-            PSDscAllowPlainTextPassword: '$true'
+          - PsDscAllowPlainTextPassword: '1'
+            nodename: localhost
