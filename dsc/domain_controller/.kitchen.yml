@@ -12,7 +12,7 @@ driver:
   linked_clones: true
   gui: false
   customize:
-    cpus:
+    cpus: 2
     memory: 2048
 
 transport:
