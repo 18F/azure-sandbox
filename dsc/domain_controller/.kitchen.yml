@@ -27,4 +27,4 @@ platforms:
       box: mwrock/Windows2012R2
 
 suites:
-  - name: create_DomainController
+  - name: TLABetaDomainController

@@ -1,4 +1,4 @@
-configuration create_DomainController
+configuration TLABetaDomainController
 {
   param
   (
@@ -20,7 +20,7 @@ configuration create_DomainController
 
 }
 
-create_DomainController
+TLABetaDomainController
 
 Start-DscConfiguration -ComputerName localhost -Wait -Force`
  -Verbose -path .\create_DomainController -Debug
