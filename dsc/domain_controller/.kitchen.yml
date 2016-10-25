@@ -14,7 +14,7 @@ driver:
   linked_clones: true
   gui: false
   customize:
-    cpus:
+    cpus: 2
     memory: 2048
 
 transport:
@@ -26,7 +26,7 @@ verifier:
 platforms:
   - name: windows_2012r2
     driver:
-      box: mwrock/Windows2012R2
+      box: a-mcf/Win2012R2-WMF5-min  # based on mwrock, includes wmf5
 
 suites:
   - name: TLABetaDomainController
