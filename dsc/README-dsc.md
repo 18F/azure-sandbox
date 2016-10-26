@@ -6,6 +6,24 @@ However, even in a monoculture of Windows and Powershell, DSC is still not matur
 
 **Conclusion: Oct 13: Merits further study**
 
+**Conclusion: Oct 25: Still true**
+
+We intend to make use of _DSC resources_ as much as possible, as the number and quality of DSC resources
+has improved over the last couple of years, and using DSC leverages existing Powershell skills. For composing system configurations and distributing them *we will use Chef server-client as the framework* for the following reasons
+
+- *Resource distribution*: Module management with DSC pull server is significantly more complicated than the process for Chef Cookbook management, particularly since we may not be able to use the Azure Automation DSC pull services (and associated reporting and VCS repository linking). Faced with running our own DSC Pull Server with its minimal reporting facilities, or running Chef Server with analytics/reporting and the years of code management tools that Chef has developed, gives the edge to Chef.
+- *Dependency managment*: Chef has `Berksfile`, `metadata.rb` dependency specifications, and `Policyfile` to manage specific groupings of dependent resources, to which DSC has no equivalent.
+  - *Unversionable class resources*: WMF4-style resources can be versioned by manually incrementing the name of a distributed .Zip file. WMF5 introduced class-based DSC resources, which alleviates many of the code reuse problems with functional resources. However, class-based resources are unversionable so can't be used with an automated build pipeline (Ref: _The DSC Book_, 'Custom Resources' chapter)
+- *Bootstrapping*: Associating new Azure nodes to use either a DSC pull server or Chef server are roughly comparable via AzureRM extensions. However, the provisioning process in our Azure deployment is still in flux, and we may not be able to count on use of these extensions, and when a system is provisioned w/o these extensions, associating a node with pull server is still an open problem. (Ref: https://powershell.org/forums/topic/bootstrap-windows-using-dsc/)
+  - *Certificates and secrets*: This problem seems particularly acute around secrets management. As the sample script at https://gallery.technet.microsoft.com/scriptcenter/xActiveDirectory-f2d573f3 shows, to encrypt credentials into a MOF file, one needs the target systems' public keys at build time. Otherwise you need to commit clear-text credentials into the MOF, a bad practice. Since chef-client compiles code at run time we can inject secrets dynamically from ChefVault, EncryptedDataBags, or third-party secrets management systems like Azure KeyVault or Conjur or Hashicorp Vault.  This problem is also acknowledged in the _The DSC Book_, section on 'Self-Modifying Configurations'. Note that ChefVault is not without its scaling problems (ref: http://www.pburkholder.com/blog/2015/12/04/why-chef-vault-and-autoscaling-dont-mix/) but there are at least ways to integrate Chef with 3rd party systems.
+- *Future flexibility*: Chef can manage Windows systems with DSC resources, and Linux/Solaris systems with existing Chef cookbooks. A DSC-based system would not suffice to manage non-Windows systems at this time.
+- *Culture*: We need to instill a mindset of 'Best tool for the job' and 'Yes! We can learn this' and that includes choosing an Infrastructure Automation platform running on Linux and built around Ruby. Modern development, security and operations teams should approach all tasks intent on continuous improvement and continuous learning. For decades, Microsoft Windows products tried to minimize professionalism in system operations.
+To quote Michael Hedgepeth:
+**"Microsoft is a fantastic platform for enterprise-level development and they have an excellent cloud solution for enterprises. But they also have a long legacy and entire culture centered around the message that you can do IT with little training and a few button clicks."**"
+But the 2016 server stack is built around a different approach (ref: https://www.youtube.com/watch?v=3Uvq38XOark - Jeffrey Snover's "The Cultural Battle to Remove Windows from Window Server") and one that we should embrace.
+
+
+
 ## _Nota Bene_
 
 This is a work-in-progress regarding our early work with DSC. As this has _not_ been formally published  it should not
