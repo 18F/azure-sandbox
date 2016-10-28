@@ -3,6 +3,10 @@
 
 . .\particulars.ps1
 
+if ( -not $credential ) {
+  $credential = (get-credential $user)
+}
+
 function Sync-From-Home
 {
   Robocopy.exe \\TSCLIENT\Projects\18f\azure-sandbox\dsc C:\Users\$me\dsc /mir
@@ -55,3 +59,7 @@ function See-Jenkins
 {
   irw http://localhost:8080/login   # or in IE: http://hostname:8080/login
 }
+
+#Differences from 903-d
+# 1 Winrm not Enabled
+# 2 FIPS mode is ineabled
