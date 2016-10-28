@@ -1,12 +1,10 @@
-**Posited**: In a heterogenous computing environment where dev and ops are comfortable with both Linux and Windows, and with various high-level languages like Ruby or Powershell, then Chef/Puppet is a better choice than DSC for Windows automation.
 
-However, even in a monoculture of Windows and Powershell, DSC is still not mature enough for lifecycle management of a wide variety of systems, and it's better to bite the bullet and introduce Linux servers to host Chef or Puppet and introduce those systems to nascent DevOps teams.
-
-**Conclusion: Sep 29: True**
+**Conclusion: Sep 29: DSC not ready for our use**
 
 **Conclusion: Oct 13: Merits further study**
 
-**Conclusion: Oct 25: Still true**
+**Conclusion: Oct 25: DSC as a technology is ready, but the tooling/framework
+around it is not**
 
 We intend to make use of _DSC resources_ as much as possible, as the number and quality of DSC resources
 has improved over the last couple of years, and using DSC leverages existing Powershell skills. For composing system configurations and distributing them *we will use Chef server-client as the framework* for the following reasons
@@ -42,10 +40,21 @@ This README summarize our experiences, and some of those in the community, with 
 
 and some initial core infra for logging and monitoring.
 
-I would like to consider all these systems as crops, not houseplants (or cattle, not pets), and automate their lifecycles for (all the reasons). As for that automation, the choices are:
-- Chef (not an endorsement of Chef over Puppet. Simply, the differences between them matter less than the fact that I can build out infra quickly w/ Chef, instead re-re-releaning Puppet)
+We would like to consider all these systems as crops, not houseplants (or cattle, not pets), and automate their lifecycles for (all the reasons). As for that automation, the choices are:
+- Chef (not an endorsement of Chef over Puppet. Simply, the differences between them matter less than the fact we have more in-house experience with Chef, and would prefer not to relearn Puppet)
 - DSC w/ AzureAutomation
 - SCCM: I have no experience with SCCM and will let the folks at partner agency w/ SCCM experience help determine what role it should play.
+
+After an initial assessment of DSC in September 2016, we made the follow
+conclusion, which we then re-examined in October 2016 after some useful
+feedback from the Powershell community:
+
+> **Posited**: In a heterogenous computing environment where dev and ops are comfortable with both Linux and Windows, and with various high-level languages like Ruby or Powershell, then Chef/Puppet is a better choice than DSC for Windows automation.  However, even in a monoculture of Windows and Powershell, DSC is still not mature enough for lifecycle management of a wide variety of systems, and it's better to bite the bullet and introduce Linux servers to host Chef or Puppet and introduce those systems to nascent DevOps teams.
+
+In addition to doing a deeper dive into the technology, we also reached out to
+the community, over Twitter and mailing lists, to ascertain the scale and
+scope of Windows automation in different environments.
+
 
 ### How do Chef and DSC compare? Executive Summary
 
@@ -82,17 +91,9 @@ DSC Adoption: Risks & Benefits
 * DSC Pull Server: Free
 * DSC Azure Automation: $72/node/annum (no analog to Chef Compliance or Workflow)
 
-## An analogy
 
-This is like comparing an Audi A3 turbodiesel to a petrol-powered TukTuk
-3wheeler.  The Audio A3 is clearly better in every respect until you realize
-you'll be living in a country where only 10% of service stations carry diesel, all of the mechanics know
-TukTuks intimately, and the speed limit is 30mph everywhere anyhow.
+## Chef or DSC? \[Notes from early October 2016\]
 
-(And you may think the TukTuk is more fun anyhow....)
-
-
-## Chef or DSC?
 
 I would really like DSC to work out because:
 - eventual users and owners are more comfortable with Windows and Powershell than they are with Ruby, Linux and open-source in general
@@ -169,7 +170,23 @@ But this leaves us with the issue of: How do nodes get told where to look for th
 
 ## Can Chef work in a Windows monoculture?
 
-## What does SCCM do, anyhow?
+As a corollary to the above question, we also reached out to the Chef
+community to find examples of whether Chef has worked out in Windows shops --
+not as a matter of whether the technology works, but whether the potential
+cultural barriers are too high. 
+
+Getting feedback involved Discourse postings:
+- https://discourse.chef.io/t/chef-in-a-windows-monoculture-success-examples/9733
+
+And Twitter outreach:
+- https://twitter.com/pburkholder/status/789180324009816064
+
+In the end I only found two shops that have adopted Chef that are more than
+90% windows: NCR and MSN. There are lots of shops that are Windows-dominant:
+Nordstrom and Alaska Air, to name two.
+
+
+## SCCM and the Config Management space
 
 https://donjones.com/2014/06/11/why-i-think-sccm-will-probably-not-survive/. From the comments:
 >  I see Microsoft BEGINNING to line up the functional replacements for SCCM’s existing features. Those first steps, combined with SCCM’s non-cloud-focus, is what makes me think Microsoft is indeed walking down a path to replace SCCM.
