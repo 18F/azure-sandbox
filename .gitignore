@@ -1,3 +1,4 @@
 .gem/
 *.kitchen/
 azuredeploy.parameters.json
+*.secret
