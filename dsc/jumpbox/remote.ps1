@@ -9,12 +9,12 @@ if ( -not $credential ) {
 
 function Sync-From-Home
 {
-  Robocopy.exe \\TSCLIENT\Projects\18f\azure-sandbox\dsc C:\Users\$me\dsc /mir
+  Robocopy.exe \\TSCLIENT\Projects\18f\azure-sandbox\dsc C:\Users\$me\dsc /e
 }
 
 Function Sync-To-Remote
 {
-  Robocopy.exe \\TSCLIENT\Projects\18f\azure-sandbox\dsc $share /mir
+  Robocopy.exe \\TSCLIENT\Projects\18f\azure-sandbox\dsc $share /e
 }
 
 Function Connect-To-Remote
