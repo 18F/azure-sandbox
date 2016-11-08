@@ -47,4 +47,18 @@ Do the automatable stuff w/ DSC:
 
 ## Do manual config
 
-TFS now you can do a manual configuration with 
+TFS now you can do a manual configuration with install_dir/Tools/TFSMgmt.exe. This takes a while.
+
+The results from the manual install are stored here in `Logs-20161108` (redacted) for future reference for unattended install.
+Note that
+- SQLServer auth used my network creds, the services locally are running w/ local accounts.
+- Only two services seem to have started, SSH and JobAgent, so the bulk of work might be under IIS.
+
+```
+PS C:\Users\peter.burkholder> get-service | where {$_.Status -eq "Running" -and $_.DisplayName -match "Found"}
+
+Status   Name               DisplayName
+------   ----               -----------
+Running  TeamFoundationS... Team Foundation Ssh Service
+Running  TFSJobAgent        Visual Studio Team Foundation Backg...
+```
