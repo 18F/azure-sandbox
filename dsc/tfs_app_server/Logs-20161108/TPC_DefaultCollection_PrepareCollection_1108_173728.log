@@ -1,0 +1,106 @@
+====================================================================
+Collection name : DefaultCollection
+Operation class : PrepareCollection
+Time Zone       : Coordinated Universal Time
+Queue time      : 11/08/2016 17:37:28
+Start time      : 11/08/2016 17:37:29
+End time        : 11/08/2016 17:37:33
+Execution time  : 0:00:00:04
+Job result      : Succeeded
+====================================================================
+[17:37:28.470]   Creating dictionary with 2 initial items:
+[17:37:28.487]   	CollectionProperties => Value: 5f0d1604-c9d2-4799-907d-d0724508c1f6 (DefaultCollection)
+[17:37:28.487]   	ConnectionInfo => Value: Microsoft.TeamFoundation.Framework.Server.SqlConnectionInfoWrapper
+[17:37:28.487]   Setting token. Key: JobId. Value: ba6e3565-7a9b-4754-99cb-9f8e7b1f910e.
+[17:37:28.487]   Setting item. Key: ConnectionInfo. Value: Data Source=AZURE915-D;Initial Catalog=Tfs_DefaultCollection;Integrated Security=True.
+[17:37:28.487]   OperationClass: PrepareCollection
+[17:37:28.487]   Dbo connection string was not found in servicing items
+[17:37:28.487]   Setting item. Key: DboConnectionInfo. Value: Data Source=AZURE915-D;Initial Catalog=Tfs_DefaultCollection;Integrated Security=True.
+[17:37:28.487]   Setting token. Key: OnlineUpdate. Value: true.
+[17:37:28.487]   Registering the servicing job as running.
+[17:37:28.907]   Registered the job.
+[17:37:28.923]   onlineUpdate: False
+[17:37:28.923]   Setting item. Key: HostedDeployment. Value: False.
+[17:37:28.923]   Setting token. Key: CurrentStepName. Value: Create Database.
+[17:37:28.923]   Setting token. Key: CurrentStepGroupName. Value: Install.ProvisionCollectionCreate.
+[17:37:28.923] +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[17:37:28.923] Executing step: Create Database
+[17:37:28.923]   Executing step: 'Create Database' Database.CreateCollectionDatabase (1 of 4)
+[17:37:28.923]   Database name: Tfs_DefaultCollection, Sql Server Instance: AZURE915-D
+[17:37:29.080]   The database has been registered in the pool. Database: Tfs_DefaultCollection, Server: AZURE915-D, DatabaseId: 2
+[17:37:29.080]   Creating database. Name: Tfs_DefaultCollection, DataSource: AZURE915-D
+[17:37:29.080]   Creating the database. Database name: Tfs_DefaultCollection. Collation: . Size: 0 GB. Edition: web. ServiceObjective: shared.
+[17:37:31.317]   The Database was created successfully. Name: Tfs_DefaultCollection, Server: AZURE915-D. It took 2239 ms to create database.
+[17:37:31.317]   Provisioning roles.
+[17:37:31.520]   Success
+[17:37:31.520]   Configuration database machine: AZURE915-D
+[17:37:31.520]   Querying TFSEXECROLE members, connection string: Data Source=AZURE915-D;Initial Catalog=Tfs_Configuration;Integrated Security=True
+[17:37:31.583]   1 login(s) returned.
+[17:37:31.583]   Querying dbo login, connection string: Data Source=AZURE915-D;Initial Catalog=Tfs_Configuration;Integrated Security=True
+[17:37:31.630]   dbo login: BETADEV\peter.burkholder, sid: S-1-5-21-1996115817-2268799233-2340969183-1612
+[17:37:31.630]   BETADEV\peter.burkholder is not a member of the Team Foundation Service Accounts group.
+[17:37:31.630]   DataTier connection string: Data Source=AZURE915-D;Integrated Security=True
+[17:37:31.943]   Granted access to the Tfs_DefaultCollection database to BETADEV\AZURE914-D$.
+[17:37:31.960]   Setting item. Key: CollectionDatabaseId. Value: 2.
+[17:37:31.960] Step passed: Create Database. Execution time: 3 seconds.
+[17:37:31.960]   [StepDuration] 3.0393374
+[17:37:31.960]   Setting token. Key: CurrentStepName. Value: Update Database Compatibility Level.
+[17:37:31.960]   Setting token. Key: CurrentStepGroupName. Value: Install.ProvisionCollectionCreate.
+[17:37:31.960] +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[17:37:31.960] Executing step: Update Database Compatibility Level
+[17:37:31.960]   Executing step: 'Update Database Compatibility Level' Sql.ExecuteSql (2 of 4)
+[17:37:31.960]   Step Data: SqlResource => upd_SetCompatibilityLevelToLatest.sql
+[17:37:31.960]   Step Data: BatchTimeout => 0
+[17:37:31.960]   Step Data: Parameters => 
+[17:37:31.960]   Step Data: Database => 
+[17:37:31.960]   Step Data: ConnectionString => 
+[17:37:31.960]   Step Data: AcquireLock => False
+[17:37:31.960]   Step Data: ExecuteOverride => True
+[17:37:31.960]   Step Data: Services => 
+[17:37:32.037]   It took 81 ms to retrieve script(s)
+[17:37:32.037]   Database: Tfs_DefaultCollection, Sql Instance: AZURE915-D
+[17:37:32.367]   SQL Info: @SPID=81
+[17:37:32.380]   Execution of script "upd_SetCompatibilityLevelToLatest.sql" took 0:00:00.017.
+[17:37:32.380] Step passed: Update Database Compatibility Level. Execution time: 420 milliseconds.
+[17:37:32.380]   [StepDuration] 0.4225673
+[17:37:32.380]   Setting token. Key: CurrentStepName. Value: Set Recovery Model to Simple.
+[17:37:32.380]   Setting token. Key: CurrentStepGroupName. Value: Install.ProvisionCollectionCreate.
+[17:37:32.380] +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[17:37:32.380] Executing step: Set Recovery Model to Simple
+[17:37:32.380]   Executing step: 'Set Recovery Model to Simple' Sql.SetRecoveryModelToSimple (3 of 4)
+[17:37:32.647]   Database Service level: 
+[17:37:32.647]   Minimum Service level to skip step: Dev14.M89
+[17:37:32.647]   Skipped setting recovery model to simple.
+[17:37:32.647] Step passed: Set Recovery Model to Simple. Execution time: 267 milliseconds.
+[17:37:32.647]   [StepDuration] 0.2690268
+[17:37:32.647]   Setting token. Key: CurrentStepName. Value: Turn off RCSI.
+[17:37:32.647]   Setting token. Key: CurrentStepGroupName. Value: Install.ProvisionCollectionCreate.
+[17:37:32.647] +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[17:37:32.647] Executing step: Turn off RCSI
+[17:37:32.647]   Executing step: 'Turn off RCSI' Database.SetRcsi (4 of 4)
+[17:37:32.710]   SQL Info: @SPID=81
+[17:37:32.740]   SQL Info: RCSI is already turned off on this database.
+[17:37:32.740]   Execution of script "TurnOffRCSI.sql" took 0:00:00.017.
+[17:37:32.740]   Querying database state
+[17:37:32.757]   Collation: SQL_Latin1_General_CP1_CI_AS, Compatibility level: 120, Create date: 11/08/2016 17:37:29, Full Text Enabled: True, State: Online, Access: Multiple
+[17:37:32.757]   Executing SQL statement: SELECT SUM(reserved_page_count) FROM sys.dm_db_partition_stats
+[17:37:32.757]   Data source: AZURE915-D
+[17:37:32.757]   Database name: Tfs_DefaultCollection
+[17:37:32.897] Step passed: Turn off RCSI. Execution time: 250 milliseconds.
+[17:37:32.897]   [StepDuration] 0.2404859
+[17:37:32.897]   [GroupDuration] 3.9771828
+[17:37:32.897]   [OperationDuration] 3.9771993
+[17:37:32.927]   Clearing dictionary, removing all items.
+
+======================================================================================================
+ Step execution times in descending order
+======================================================================================================
+Create Database (Install.ProvisionCollectionCreate, ProvisionCollectionCreate)                     - 3 seconds
+Update Database Compatibility Level (Install.ProvisionCollectionCreate, ProvisionCollectionCreate) - 420 milliseconds
+Set Recovery Model to Simple (Install.ProvisionCollectionCreate, ProvisionCollectionCreate)        - 267 milliseconds
+Turn off RCSI (Install.ProvisionCollectionCreate, ProvisionCollectionCreate)                       - 250 milliseconds
+
+======================================================================================================
+ Execution times by group in descending order
+======================================================================================================
+Install.ProvisionCollectionCreate (ProvisionCollectionCreate)                                      - 3 seconds
