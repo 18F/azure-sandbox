@@ -1,0 +1,68 @@
+# Azure Automation Demo
+
+The README documents the steps I took to get to a demo of:
+
+- create a resource group
+- deploy a single instance to that group
+  - that instance uses the Azure Automation extension
+  - to implement a single resource, e.g. IIS feature.
+
+## Resources
+
+https://docs.microsoft.com/en-us/azure/virtual-machines/virtual-machines-windows-ps-template -- A simple template example
+
+## 1: Create a functional VM from a template
+
+### Follow the steps from microsoft:
+
+1. Copy template json from https://docs.microsoft.com/en-us/azure/virtual-machines/virtual-machines-windows-ps-template to azure-deploy.json
+1. The file above expects `adminUsername` and `adminPassword` to be profived as parameters, which I've saved to `parameters.json`
+  - Add `parameters.json` to your `.gitignore`
+1. Connect to Azure USGov with `az login`
+  - Make sure correct cloud is specified in `~/.azure/context_config/default`
+1. Create the resource group with location `usgovvirginia`:
+```
+az group create --name myrg1 --location usgovvirginia
+```
+1. Implement the template
+```
+az group deployment create --verbose \
+  --resource-group myrg1 \
+  --template-file azure-automation-demo/azure-deploy.json \
+  --name azautodemo \
+  --parameters '@azure-automation-demo/parameters.json'
+```
+1. It fails with `The storage account named mystorage1 is already taken.`
+
+### Update steps for unique storage account
+
+Storage accounts share a global namespace, so we need to assure that storageaccount name is unique.
+Make the following changes to change 'mystorage1' to a variable from `uniquestring`
+
+```
+diff --git a/arm/azure-templates/azure-automation-demo/azure-deploy.json b/arm/azure-templates/azure-automation-demo/azure-deploy.json
+index f878202..2fe6d99 100644
+@@ -8,2 +8,3 @@
+  "variables": {
++   "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'azautodemo')]",
+    "vnetID":"[resourceId('Microsoft.Network/virtualNetworks','myvn1')]",
+@@ -14,3 +15,3 @@
+      "type": "Microsoft.Storage/storageAccounts",
+-     "name": "mystorage1",
++     "name": "[variables('storageAccountName')]",
+      "apiVersion": "2015-06-15",
+@@ -71,3 +72,3 @@
+        "Microsoft.Network/networkInterfaces/mync1",
+-       "Microsoft.Storage/storageAccounts/mystorage1"
++       "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+@@ -90,3 +91,3 @@
+            "vhd": {
+-             "uri": "https://mystorage1.blob.core.windows.net/vhds/myosdisk1.vhd"
++             "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.usgovcloudapi.net/vhds/','osdisk.vhd')]"
+            },
+```
+
+Note also: the storage account now uses `blob.core.usgovcloudapi.net`
+
+### Now, add the Azure Automation extension....
