@@ -97,6 +97,36 @@ is a no-op, and updates that deployment info at https://portal.azure.us/#resourc
 
 From there, let's reference https://github.com/Azure/azure-quickstart-templates/tree/master/dsc-extension-azure-automation-pullserver
 
+For your $RG (resource-group):
+- Create an AzureAutomation acccount through the portal that is in your ResourceGroup
+- Upload TestConfig.ps1:
+```
+ configuration TestConfig
+ {
+     Node WebServer
+     {
+         WindowsFeature IIS
+         {
+             Ensure               = 'Present'
+             Name                 = 'Web-Server'
+             IncludeAllSubFeature = $true
+
+         }
+     }
+
+     Node NotWebServer
+     {
+         WindowsFeature IIS
+         {
+             Ensure               = 'Absent'
+             Name                 = 'Web-Server'
+
+         }
+     }
+     }
+```
+- Get the URL and Keys for the automation account from AutomationAccount -> AllSettings -> Keys (see below)
+
 The purpose of the template is to add DSC to an existing VM, I'll copy the content of `azuredeploy.json` to `add-azure-auto.json` and parameters to `add-azure-auto.parameters.json`. In that file, change:
 
 * vmName, myvm1
