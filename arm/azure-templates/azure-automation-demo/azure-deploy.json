@@ -83,13 +83,13 @@
          "imageReference": {
            "publisher": "MicrosoftWindowsServer",
            "offer": "WindowsServer",
-           "sku": "2012-R2-Datacenter",
+           "sku": "2016-Datacenter",
            "version" : "latest"
          },
          "osDisk": {
            "name": "myosdisk1",
            "vhd": {
-             "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.usgovcloudapi.net/vhds/','osdisk.vhd')]"
+             "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.usgovcloudapi.net/vhds/','osdisk1.vhd')]"
            },
            "caching": "ReadWrite",
            "createOption": "FromImage"
