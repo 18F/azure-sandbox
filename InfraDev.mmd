@@ -1,0 +1,73 @@
+%% Example of sequence diagram
+sequenceDiagram
+  participant ProductOwners as Product Owners
+  participant DeveloperA as Developer A
+  participant DeveloperB as Developer B
+  participant TFSGit as TFS / Git
+  participant Jenkins
+  participant Sandbox
+  participant AzureChef as Cloud + Inf Automation
+  participant ScanSuite as Functional Testing
+  participant Nexus as Artifact Repo
+  participant InfService as Infra Service
+
+  Note over ProductOwners, InfService: Inf-as-code development is like code development, except devs need Sandbox nodes, and the release to Infra service provides code that will travel with applications through the Acceptance, Integration, Preprod and Production environments. If only an infrastructure change is needed, then the same release pipeline is used, but there's no change in application code version, just the versions of the infrastructure code.
+  
+  ProductOwners ->> TFSGit: Creates issue, e.g. "Need Redis nodes"
+  Note over ProductOwners, TFSGit: Step 1: Dev pulls code from repository, pushes branch when ready for external validation
+  TFSGit ->>+ DeveloperA: Pull master, takes issue
+  Note left of DeveloperA: Write test, Fail test, Write code, Pass test, Commit to short-lived branch
+  DeveloperA ->>+ Sandbox: Test provision and configue
+      Note right of Sandbox: Mediated with a tool like kitchen-dsc or kitchen-azure
+  Sandbox -->>- DeveloperA: Test results
+  DeveloperA ->>- TFSGit: Push branch
+    TFSGit ->>+ Jenkins: Push triggers code push job
+    Note right of Jenkins: Build code. Run test: lint, unit
+    Jenkins ->>+ Sandbox: Trigger integration tests
+      Note right of Sandbox: Mediated with a tool like kitchen-dsc or kitchen-azure
+    Sandbox -->>- Jenkins: Test results
+    Jenkins -->>- TFSGit: Test results
+  TFSGit -->> DeveloperA: Test results
+
+  Note over ProductOwners, TFSGit: Step 2 Dev is ready to merge work to master. Pull Request starts conversation
+  DeveloperA ->>+ TFSGit: Create PR to merge to master
+  TFSGit -->> DeveloperB: PR ready to review
+
+  loop Until PR Close
+    DeveloperB -->> DeveloperA: Discuss
+    DeveloperA -->> DeveloperB: Discuss
+  end
+  DeveloperB ->>- TFSGit: Close PR, Merge to master
+
+  Note over ProductOwners, TFSGit: Step 3: Release code to Acceptance env, where it undergoes testing against all the other build components of the site
+  TFSGit ->>+ Jenkins: Merge triggers `ToAcceptance`.
+    Note right of Jenkins: Build code. Run test: lint, unit
+    Jenkins ->>+ Sandbox: Run integration
+    Sandbox -->>- Jenkins: Test results
+    Jenkins ->>+ Nexus: Send build artifact, e.g. DSC zipfile or Chef cookbook
+    Jenkins ->>+ AzureChef: Request Acceptance env
+    AzureChef -->> Nexus: Request artifact under test
+    AzureChef -->> InfService: Request cookbooks or DSC
+    Nexus ->> AzureChef: Artifact
+    InfService -->> AzureChef: Cookbooks, DSC
+    Note left of AzureChef: Inf Automation provisions and configures from templates and cookbooks
+    AzureChef -->> Jenkins: Acceptance env is ready
+    Jenkins ->>+ ScanSuite: Trigger full app test
+    Note right of ScanSuite: AppScan, Nessus, WebInspect, etc.
+    ScanSuite ->> AzureChef: Scan and test
+    AzureChef -->> ScanSuite: Scan and test data
+    ScanSuite -->>- Jenkins: Scan test results
+    Jenkins -->>- TFSGit: Test results
+  TFSGit -->> DeveloperA: Test results
+  TFSGit -->>+ ProductOwners: Ready for testing
+
+  ProductOwners --> AzureChef: Exploratory Testing
+  ProductOwners ->>+ Jenkins: Trigger "Ship It" job
+  Jenkins ->>+ InfService: Store new artifact (DSC / Cookbook)
+  InfService -->>- Jenkins: Artifact stored
+  Jenkins ->> AzureChef: Destroy acceptance
+  AzureChef -->>- Jenkins: Acceptance destoryed
+  Jenkins -->>- ProductOwners: Done
+  deactivate Jenkins
+
+  Note over ProductOwners, TFSGit: Step 4: Code has passed acceptance testing, ready for release pipeline.

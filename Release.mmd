@@ -1,0 +1,67 @@
+%% Example of sequence diagram
+sequenceDiagram
+  participant PO as Product Owners
+  participant RelEng as Release Engineer
+  participant Nexus as Artifact Repository
+  participant Delivery as Deploy Pipeline
+  participant Test as Function and NFR Testing
+  participant Int
+  participant PreBlue as PreProd Blue
+  participant PreGreen as PreProd Green
+  participant Prod as Prod Blue / Green Envs
+
+
+  Note over PO, Nexus: Step 1: Product Owner declares artifact ready for integration testing
+  PO ->+ RelEng: New artifact
+    Note right of RelEng: Product Owner, Dev and RelEng review changelog and determine if tests and monitoring are appropriate for new feature, update relevent code if not.
+  RelEng -->- PO: Artifact OK
+  PO ->> Delivery: Update artifact version
+  Delivery ->> Int: Update env
+    Note right of Int: Use current production versions + new artifact version
+  Int ->> Nexus: Request artifact
+  Nexus -->> Int: Artifact delivery
+  Int -->> Delivery: Env ready
+  Delivery ->>+ Test: Start tests
+  Test -->>- Delivery: Test results
+  Delivery -->> RelEng: Test results
+    Note right of RelEng: RelEng reviews test results, updates tests and builds if they are the source of the problem, coordinates with POs and developers if there are intergration issues
+  Delivery -->> PO: Test results
+
+  Note over PO, Nexus: Step 2: Product Owner and Release Engineer agree artifact is ready for release
+  PO ->> Delivery: Update artifact version for PreProd Green
+  Delivery ->> PreGreen: Update env
+    Note right of PreGreen: Use current production versions + new artifact version
+  PreGreen ->> Nexus: Request artifact
+  Nexus -->> PreGreen: Artifact delivery
+  PreGreen -->> Delivery: Env ready
+  Delivery ->>+ Test: Start tests
+  Test -->>- Delivery: Test results
+  Delivery ->>+ PreGreen: Go live
+  PreGreen -->>- Delivery: OK
+  Delivery ->>+ PreBlue: Go standby
+  PreBlue -->>- Delivery: OK
+  Delivery ->>+ Test: Start tests
+  Test -->>- Delivery: Test results
+  Delivery -->> RelEng: Test results
+  Delivery -->> PO: Test results
+
+  Note over PO, Nexus: Step 3: Successful changes must be delivered to production to prevent drift between preprod and prod
+  PO ->> Delivery: Update artifact version for Prod Green
+  Delivery ->> Prod: Update green env
+    Note right of Prod: Prod uses blue/green, but not shown here for space
+  Prod ->> Nexus: Request artifact
+  Nexus -->> Prod: Artifact delivery
+  Prod -->> Delivery: Env ready
+  Delivery ->>+ Test: Start tests on Green
+  Test -->>- Delivery: Test results
+  Delivery ->>+ Prod: Go live with Green
+  Prod -->>- Delivery: OK
+  Delivery ->>+ Prod: Go standby with Blue
+  Prod -->>- Delivery: OK
+  Delivery ->>+ Test: Start tests
+  Test -->>- Delivery: Test results
+  Delivery -->> RelEng: Test results
+  Delivery -->> PO: Test results
+  PO -> RelEng: High Fives!
+    Note right of RelEng: Do not skip this step!!
+  RelEng ->> PO: Sure!

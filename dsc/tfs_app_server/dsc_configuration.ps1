@@ -38,7 +38,7 @@ configuration tfsAppServer
 
     $TFSinstaller = "S:\TfsServer2015.3.exe"
     # Cribbed from https://github.com/haxu/ps/blob/master/TFS/Env-TFS-Installation.ps1
-    Script FullTFS
+    Script FullTFS  # This script does nothing when TFS has been manually installed....
     {
       TestScript = {
         if (Test-Path -Path "$env:ProgramFiles\Microsoft Team Foundation Server 14.0\Tools\TfsConfig.exe") {
@@ -55,7 +55,7 @@ configuration tfsAppServer
         Write-Verbose -Message "============== FINIS ========="
       }
 
-      
+
     } #script
   } #node
 } #configuration

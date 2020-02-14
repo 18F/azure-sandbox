@@ -1,0 +1,71 @@
+graph TD;
+  subgraph Internet
+    CLA["Internet: Google, StackOverflow, Github"]
+    AZ["Azure Services"]
+    AZP["Azure-Provision"]
+  end
+  subgraph User-Network
+    0USER["App0 User"]
+    SUSER["Splunk User"]
+  end
+  subgraph AgencyOnPrem
+    AW1["Approving Workstation"]
+    LW1["Local Workstation"]
+  end
+  subgraph AGENCYDEV
+    subgraph DEVSVC
+      RDS["Remote Desktop Services"]
+      TFS["TFS"]
+      JKS["Jenkins"]
+      PIPE["Jenkins-Pipeline"]
+      CHEF["Chef Server"]
+    end
+    subgraph DEVWEB
+      DW0["App0-Web"]
+      SPH["Splunk Frontend"]
+    end
+    subgraph DEVAPP
+      DA0["App0-App"]
+      SPF["Splunk Forwarder"]
+    end
+    subgraph DEVDB
+      DD0["App0-Db"]
+      SPI["Splunk Indexer"]
+    end
+  end
+
+AW1 -.-|443|RDS
+LW1 -.-|443|RDS
+LW1 -.-|443|CLA
+RDS -.->|443,Git|TFS
+TFS -.-|443|JKS
+TFS -.-|80,443|CHEF
+JKS -.- PIPE
+PIPE -.->|80,443|CHEF
+PIPE -.->|443|AZ
+RDS -.->|443|JKS
+AZ -.- AZP
+AZP -.- DW0
+AZP -.- DA0
+AZP -.- DD0
+DW0 -.->|80,443|CHEF
+DA0 -.->|80,443|CHEF
+DD0 -.->|80,443|CHEF
+0USER -.->|443|DW0
+RDS -.->|443|DW0
+DW0 -.->|8443|DA0
+DA0 -.->|1433|DD0
+DW0 -.->|514|SPF
+DA0 -.->|514|SPF
+DD0 -.->|514|SPF
+AZP -.- SPF
+AZP -.- SPI
+AZP -.- SPH
+SPF -.->|80,443|CHEF
+SPI -.->|80,443|CHEF
+SPH -.->|80,443|CHEF
+SPF -.->|9997|SPI
+SPH -.->|8089|SPI
+SPF -.->|443|AZ
+SUSER -.->|443|SPH
+RDS -.->|443|SPH

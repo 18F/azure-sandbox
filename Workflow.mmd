@@ -1,0 +1,62 @@
+%% Example of sequence diagram
+sequenceDiagram
+  participant ProductOwners as Product Owners
+  participant DeveloperA as Developer A
+  participant DeveloperB as Developer B
+  participant TFSGit as TFS / Git
+  participant Jenkins
+  participant Fortify AS Static Code Analysis
+  participant AzureChef as Cloud + Inf Automation
+  participant ScanSuite as Functional Testing
+  participant Nexus
+
+  ProductOwners ->> TFSGit: Creates issue
+  Note over ProductOwners, TFSGit: Step 1: Dev pulls code from repository, and does local, dev, test, the pushes branch when ready for external validation
+  TFSGit ->>+ DeveloperA: Pull master, takes issue
+  Note left of DeveloperA: Write test, Fail test, Write code, Pass test, Commit to short-lived branch
+  DeveloperA ->>- TFSGit: Push branch
+    TFSGit ->>+ Jenkins: Push triggers code push job
+    Note right of Jenkins: Build code. Run test: lint, unit
+    Jenkins ->>+ Fortify: Trigger SCA tests
+    Fortify -->>- Jenkins: Test results
+    Jenkins -->>- TFSGit: Test results
+  TFSGit -->> DeveloperA: Test results
+
+  Note over ProductOwners, TFSGit: Step 2 Dev is ready to merge work to master. Pull Request starts conversation
+  DeveloperA ->>+ TFSGit: Create PR to merge to master
+  TFSGit -->> DeveloperB: PR ready to review
+
+  loop Until PR Close
+    DeveloperB -->> DeveloperA: Discuss
+    DeveloperA -->> DeveloperB: Discuss
+  end
+  DeveloperB ->>- TFSGit: Close PR, Merge to master
+
+  Note over ProductOwners, TFSGit: Step 3: Release code to Acceptance env, where it undergoes automated testing before exploratory testing. If cookbooks, templates needed, Developers collaborate with Operation on "Infra Development"
+  TFSGit ->>+ Jenkins: Merge triggers `ToAcceptance`.
+    Note right of Jenkins: Build code. Run test: lint, unit
+    Jenkins ->>+ Fortify: Run SCA tests
+    Fortify -->>- Jenkins: Test results
+    Jenkins ->>+ Nexus: Send build artifact
+    Jenkins ->>+ AzureChef: Request Acceptance env
+    AzureChef -->> Nexus: Request artifact
+    Nexus ->> AzureChef: Artifact
+    Note left of AzureChef: Inf Automation provisions and configures env from templates & cookbooks, releases code to it.
+    AzureChef -->> Jenkins: Acceptance env is ready
+    Jenkins ->>+ ScanSuite: Trigger full app test
+    Note right of ScanSuite: AppScan, Nessus, WebInspect, etc.
+    ScanSuite ->> AzureChef: Scan and test
+    AzureChef -->> ScanSuite: Scan and test data
+    ScanSuite -->>- Jenkins: Scan test results
+    Jenkins -->>- TFSGit: Test results
+  TFSGit -->> DeveloperA: Test results
+  TFSGit -->>+ ProductOwners: Ready for testing
+
+  ProductOwners --> AzureChef: Exploratory Testing
+  ProductOwners ->>+ Jenkins: Done with acceptance
+  Jenkins ->> AzureChef: Destroy acceptance
+  AzureChef -->>- Jenkins: Acceptance destoryed
+  Jenkins -->>- ProductOwners: Done
+  deactivate Jenkins
+
+  Note over ProductOwners, TFSGit: Step 4: Code has passed acceptance testing, ready for release pipeline.
