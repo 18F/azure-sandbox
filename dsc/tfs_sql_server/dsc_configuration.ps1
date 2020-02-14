@@ -38,7 +38,7 @@ configuration tfsSqlServer
       Ensure = "Present"
     }
 
-    $Features = "SQLENGINE"
+    $Features = "SQLENGINE,FULLTEXT"
     $SQLInstanceName = "MSSQLSERVER"
     $SetupArgs = "/QUIET /ACTION=Install "
     $SetupArgs += "/FEATURES=$Features /INSTANCENAME=$SQLInstanceName "
@@ -67,9 +67,9 @@ configuration tfsSqlServer
         Write-Verbose -Message "============== FINIS ========="
       }
     }
-    #>
 
-
+# Windows Firewall rules for SQLServer:
+#    https://msdn.microsoft.com/en-us/library/cc646023.aspx
 
   }
 }

@@ -2,3 +2,5 @@
 x*/
 
 .kitchen.local.yml
+.tmp_assets
+.tmp_assets/
