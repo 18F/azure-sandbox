@@ -257,6 +257,12 @@ Key points, with editorializing in *ital* and/or \[brackets\]
   - Code delivery \[possibly fixed with Azure Automation w/ source code repo\]
   - LCM Agent Management \[No idea - help?\]
   - DSC doesn't have test-kitchen \[but it does now\]
+  
+#### Feb 2016: [Question: Why Should I Use DSC Rather than SCCM?](http://stevenmurawski.com/powershell/2016/02/what-direction-should-we-go/)
+
+An essential blog post by Steven Murawski. READ IT.
+
+
 
 ####  May 2014: [Why Puppet vs DSC isn't even a thing](https://powershell.org/2014/05/14/why-puppet-vs-dsc-isnt-even-a-thing/)
 
@@ -311,6 +317,33 @@ See [https://flynnbundy.com/category/dsc-2/](https://flynnbundy.com/category/dsc
 - StackExchange DSC resources: Evidently Murawski got that going, not sure if it's a real thing, only three commits since 21 No 2014
 - SMurawski's POSH-driven DSC tutorial: [https://github.com/PowerShellOrg/dsc-summit-precon](https://github.com/PowerShellOrg/dsc-summit-precon)
 
+### Useful comments by Galen Emery:
+
+> Patching:  Chef vs. SCCM vs. WSUS(?)
+
+Our stance on Windows patching is best managed via Chef+WSUS.  Use Chef to ensure that WSUS is setup on the node, and that it's part of the correct update group.  The wsus-client cookbook follows this pattern: https://github.com/criteo-cookbooks/wsus-client
+WSUS is *the* way to manage patches coming into your environment.  Chef is *the* way to ensure that your systems are configured accurately.
+
+> What does SC-Orchestrator do in comparison to Chef?
+
+SCOM uses the concept of a runbook.  As a tool, it's very very UI driven.  Click and drag, creating groups, etc.  It's designed for server management, like Chef.  But approaches it without the test-driven development process, or tooling.
+
+From a future perspective, Microsoft is putting a lot of investment into Powershell DSC, which SCOM can consume as part of a runbook, but again it is not designed to handle the testing and pipeline functionality that Chef does.
+
+It is also built for Windows.  It has expanded it's capabilities past it, but anything non-windows is still very new.
+
+> What does SCCM do in comparison to Chef?
+
+I'm going to let Steven handle this: http://stevenmurawski.com/powershell/2016/02/what-direction-should-we-go/
+
+> What have been the most significant improvements in Chef Windows support in the last 10 month? (From working with XXXX, I know of some of the weird hoops they jumped through for managing chef-client as admin, not sure if that's been solved in the general case. Also the client as schtask vs. service issue).
+
+Schtask vs service:  https://getchef.zendesk.com/hc/en-us/articles/205233360-Should-I-run-chef-client-on-Windows-as-a-service-or-a-scheduled-task-
+The short answer here is that scheduled task is more resilient than service.
+
+I'm not aware of any outstanding issues getting chef-client to work as admin.  Particularly in the context of scheduled tasks.
+
+In terms of changes in Windows, the changelog has a number of bugfixes.  There's a few new features, but really Chef-client is very stable on Windows, there's not a lot of pressing backlog for it right now.  And we're really focused on increasing the compliance and patching stories, to really drive home the value of using inspec and compliance.
 
 
 ## Update 12 Oct 2016 conversation w/ Don Jones:
