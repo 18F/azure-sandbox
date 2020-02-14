@@ -100,6 +100,7 @@ GEM
       json
     domain_name (0.5.20160826)
       unf (>= 0.0.5, < 1.0.0)
+    dsc_lcm_configuration (0.2.0)
     erubis (2.7.0)
     excon (0.53.0)
     faraday (0.9.2)
@@ -147,6 +148,9 @@ GEM
       azure_mgmt_resources (~> 0.5, >= 0.5.0)
       inifile (~> 3.0, >= 3.0.0)
       sshkey (~> 1, >= 1.0.0)
+    kitchen-dsc (0.11.0)
+      dsc_lcm_configuration
+      test-kitchen (>= 1.9)
     kitchen-ec2 (1.2.0)
       aws-sdk (~> 2)
       excon
@@ -226,7 +230,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    rack (2.0.1)
+    rack (2.2.2)
     rainbow (2.1.0)
     retryable (2.0.4)
     ridley (5.1.0)
@@ -342,6 +346,7 @@ DEPENDENCIES
   berkshelf
   chefspec
   kitchen-azurerm
+  kitchen-dsc
   kitchen-ec2
   kitchen-inspec
   kitchen-vagrant
